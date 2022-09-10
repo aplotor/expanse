@@ -1,0 +1,57 @@
+version: "3.8"
+volumes:
+    build:
+networks:
+    net:
+        attachable: false
+services:
+    db:
+        image: postgres:latest
+        networks:
+            - net
+        env_file:
+            - ./backend/.env_dev
+        restart: "no"
+    backend:
+        depends_on:
+            - db
+        build: ./backend/
+        working_dir: /backend/
+        volumes:
+            - ./backend/:/backend/
+            - build:/backend/build/
+        networks:
+            - net
+        extra_hosts:
+            - "host.docker.internal:host-gateway"
+        ports:
+            - "1301:1301"
+        environment:
+            - RUN=dev
+            - PORT=1301
+            - VERSION=0.0.0
+        env_file:
+            - ./backend/.env_dev
+        entrypoint: []
+        command: sh -c "wait-for-it db:5432 -t 0 && npm run dev"
+        restart: "no"
+    frontend:
+        depends_on:
+            - backend
+        build: ./frontend/
+        working_dir: /frontend/
+        volumes:
+            - ./frontend/:/frontend/
+            - build:/frontend/build/
+        networks:
+            - net
+        extra_hosts:
+            - "host.docker.internal:host-gateway"
+        ports:
+            - "1300:1300"
+        environment:
+            - RUN=dev
+            - PORT=1300
+        entrypoint: []
+        command: sh -c "wait-for-it backend:1301 -t 0 && npm run dev"
+        restart: "no"

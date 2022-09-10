@@ -1,0 +1,9 @@
+from ubuntu:latest
+run apt update
+run apt install -y curl wait-for-it
+run curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - && apt install -y nodejs
+workdir /frontend/
+copy ./package*.json .npmrc ./
+run npm ci
+copy ./ ./
+run npm run build

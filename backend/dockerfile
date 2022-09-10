@@ -1,0 +1,8 @@
+from ubuntu:latest
+run apt update
+run apt install -y curl wait-for-it postgresql-client
+run curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - && apt install -y nodejs
+workdir /backend/
+copy ./package*.json .npmrc ./
+run npm ci
+copy ./ ./

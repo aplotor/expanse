@@ -1,0 +1,48 @@
+version: "3.8"
+volumes:
+    db:
+    backups:
+    build:
+networks:
+    net:
+        attachable: false
+services:
+    db:
+        image: postgres:latest
+        volumes:
+            - db:/var/lib/postgresql/
+        networks:
+            - net
+        env_file:
+            - ./backend/.env_prod
+        restart: on-failure
+    frontend:
+        build: ./frontend/
+        working_dir: /frontend/
+        volumes:
+            - build:/frontend/build/
+        networks:
+            - net
+        restart: on-failure
+    backend:
+        depends_on:
+            - db
+            - frontend
+        build: ./backend/
+        working_dir: /backend/
+        volumes:
+            - backups:/backend/backups/
+            - build:/backend/build/
+        networks:
+            - net
+        ports:
+            - "1301:1301"
+        environment:
+            - RUN=prod
+            - PORT=1301
+            - VERSION=1.0.0
+        env_file:
+            - ./backend/.env_prod
+        entrypoint: []
+        command: sh -c "wait-for-it db:5432 -t 0 && npm run prod"
+        restart: on-failure

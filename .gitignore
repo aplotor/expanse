@@ -1,0 +1,14 @@
+# ignore
+\#*
+.*
+node_modules/
+backups/
+logs/
+tempfiles/
+build/
+
+# keep
+!.git*
+!.*ignore
+!.*rc
+!.env_example

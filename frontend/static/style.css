@@ -1,0 +1,286 @@
+@import url("https://fonts.googleapis.com/css?family=Poppins");
+@import url("https://fonts.googleapis.com/css?family=Consolas");
+@import url("https://fonts.googleapis.com/css?family=Noto+Sans");
+
+html {
+	position: relative;
+	min-height: 100%;
+}
+
+body {
+	font-family: "Poppins", sans-serif;
+	background: rgb(43, 43, 43);
+}
+
+body::-webkit-scrollbar {
+	width: 16px;
+}
+
+body::-webkit-scrollbar-track {
+	background: rgb(43, 43, 43);
+} body.light_mode::-webkit-scrollbar-track {
+	background: rgb(212, 212, 212);
+}
+
+body::-webkit-scrollbar-thumb {
+	background: rgb(80, 80, 80);
+	border: 5px solid;
+	border-color: rgb(43, 43, 43);
+	border-radius: 16px;
+} body.light_mode::-webkit-scrollbar-thumb {
+	background: rgb(175, 175, 175);
+	border-color: rgb(212, 212, 212);
+}
+
+body::-webkit-scrollbar-thumb:hover {
+	border: 3px solid;
+	border-color: rgb(43, 43, 43);
+} body.light_mode::-webkit-scrollbar-thumb:hover {
+	border-color: rgb(212, 212, 212);
+}
+
+content {
+	padding: 0 0 0.5rem 0; /* match bottom to footer height */
+}
+
+footer {
+	position: absolute;
+	width: 100%;
+	height: 0.5rem; /* space from bottom */
+	bottom: 0;
+}
+
+a {
+	color: rgb(113, 142, 183);
+	text-decoration: none;
+}
+
+a:hover {
+	color: rgb(113, 142, 183);
+	text-decoration: underline;
+}
+
+a:visited {
+	color: rgb(169, 110, 110);
+}
+
+img {
+	width: 20px;
+	height: 20px;
+}
+
+.invert {
+	filter: invert(1) hue-rotate(180deg);
+}
+
+.anti_invert {
+	filter: invert(1) hue-rotate(180deg);
+}
+
+.boxed {
+	border: 1px solid;
+	border-color: rgb(200, 200, 200);
+}
+
+.consolas {
+	font-family: "Consolas", sans-serif;
+}
+
+.dropdown-toggle {
+	color: rgb(113, 142, 183);
+}
+
+.dropdown-toggle:focus {
+	color: rgb(248, 249, 250);
+	box-shadow: none;
+}
+
+.font_size_10 {
+	font-size: 10px;
+}
+
+.line_height_1 {
+	line-height: 1;
+}
+
+.spinner-border {
+	width: 4rem;
+	height: 4rem;
+}
+
+.shake {
+	position: relative;
+	animation: shake 100ms linear;
+	animation-iteration-count: 3;
+} @keyframes shake {
+	0% {left: -5px;}
+	100% {right: -5px;}
+}
+
+.list-group-item {
+	background: rgb(52, 58, 64);
+}
+
+.list-group-item:hover {
+	background: rgb(62, 68, 74);
+	cursor: pointer;
+}
+
+.list-group-item:focus {
+	background: rgb(67, 73, 79);
+}
+
+.bootstrap-select > .dropdown-menu > .inner {
+	overscroll-behavior: none;
+}
+
+.noto_sans {
+	font-family: "Noto Sans", sans-serif;
+}
+
+.popover {
+	text-align: center;
+	width: 220px;
+}
+
+.row_1_popover_btn {
+	width: 30%;
+}
+
+.row_2_popover_btn {
+	width: 35%;
+}
+
+.skeleton_item { /* https://uxdesign.cc/using-css-design-a-simple-skeleton-loader-57d884cd3547 */
+	width: 100%;
+	height: 14.3%; /* i.e., 7 of them fills up skeleton_list */
+	display: block;
+	background: rgb(108, 117, 125) linear-gradient(
+		to right,
+		rgba(255, 255, 255, 0),
+		rgba(255, 255, 255, 0.5) 40%,
+		rgba(255, 255, 255, 0) 80%
+	);
+	background-size: 50px 500px;
+	background-position: 0 0;
+	background-repeat: repeat-y;
+	animation: shine 1s infinite;
+} @keyframes shine {
+	50% {background-position: 100% 0;}
+}
+
+.custom-file {
+	overflow: hidden;
+}
+
+.custom-file-label {
+	overflow: hidden;
+}
+
+.custom-file-label::after {
+	content: "browse";
+}
+
+.no_bullet {
+	list-style-type: none;
+}
+
+#dropdown_menu {
+	left: 50%;
+	right: auto;
+	transform: translate(-50%, 0);
+	border-bottom: 15px solid;
+	border-color: rgb(43, 43, 43);
+	width: 180px;
+} #dropdown_menu.light_mode {
+	border-color: rgb(212, 212, 212);
+}
+
+#bottom_gh {
+	font-size: 60px;
+	color: rgb(60, 60, 60);
+}
+
+#bottom_gh:hover {
+	color: rgb(120, 120, 120);
+}
+
+#login_btn {
+	background: rgb(20, 132, 214);
+	width: 250px;
+}
+
+#login_btn:hover {
+	background: rgb(30, 142, 224);
+}
+
+#login_btn:active {
+	background: rgb(40, 152, 234);
+}
+
+#login_anchor:hover {
+	text-decoration: none;
+}
+
+#reddit_logo {
+	height: 55px;
+	width: auto;
+}
+
+#settings_btn {
+	color: rgb(113, 142, 183);
+}
+
+#settings_btn:hover {
+	color: rgb(0, 86, 179);
+}
+
+#settings_btn:focus {
+	color: rgb(248, 249, 250);
+	box-shadow: none;
+}
+
+#settings_menu {
+	width: 195px;
+}
+
+#purge_input {
+	width: 95%;
+}
+
+#purge_spinner_container {
+	background: pink;
+}
+
+#redirect_notice {
+	background: pink;
+	color: black;
+}
+
+#item_list, #skeleton_list {
+	height: 75vh;
+	overflow-x: hidden;
+	overflow-y: scroll;
+	overscroll-behavior: none;
+}
+
+#item_list::-webkit-scrollbar, #skeleton_list::-webkit-scrollbar {
+	width: 12px;
+}
+
+#item_list::-webkit-scrollbar-track, #skeleton_list::-webkit-scrollbar-track {
+	background: rgb(52, 58, 64);
+	border-radius: 5px;
+}
+
+#item_list::-webkit-scrollbar-thumb, #skeleton_list::-webkit-scrollbar-thumb {
+	background: rgb(108, 117, 125);
+	border: 3px solid;
+	border-color: rgb(52, 58, 64);
+	border-radius: 12px;
+}
+
+#item_list::-webkit-scrollbar-thumb:hover, #skeleton_list::-webkit-scrollbar-thumb:hover {
+	border: 2px solid;
+	border-color: rgb(52, 58, 64);
+}
