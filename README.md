@@ -10,6 +10,7 @@ fully selfhosted multi-user web app for externally storing Reddit items (saved, 
 	- unsave/delete/unvote/unhide items from Reddit directly on expanse
 	- import csv data from [Reddit data request](https://www.reddit.com/settings/data-request)
 	- export data as json
+- [demo](https://www.youtube.com/watch?v=4pxXM98ewIc)
 - prereqs::
 	- git
 	- docker
