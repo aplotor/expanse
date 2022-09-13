@@ -9,7 +9,6 @@
 <script>
 	export let username;
 	export let show_data_anchors;
-	export let show_return_to_app;
 
 	let [
 		settings_btn,
@@ -302,10 +301,6 @@
 					</div>
 				</div>
 			</div>
-		</span>
-	{:else if show_return_to_app}
-		<span class="float-right">
-			<a href="/">return to app</a>
 		</span>
 	{/if}
 	<div class="clearfix"></div>
