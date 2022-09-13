@@ -1,4 +1,7 @@
 # https://github.com/github/linguist/blob/master/lib/linguist/languages.yml
 
+sql.mjs linguist-detectable=true
+sql.mjs linguist-language=SQL
+
 dockerfile linguist-detectable=true
 dockerfile linguist-language=Dockerfile
