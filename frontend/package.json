@@ -1,7 +1,7 @@
 {
 	"type": "module",
 	"scripts": {
-		"dev": "vite dev",
+		"dev": "RUN=dev PORT=1300 vite dev",
 		"build": "vite build",
 		"preview": "vite preview"
 	},

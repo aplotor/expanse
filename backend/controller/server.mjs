@@ -22,6 +22,8 @@ const io = new socket_io_server.Server(server, {
 	maxHttpBufferSize: 1000000 // 1mb in bytes
 });
 
+const frontend = backend.replace("backend", "frontend");
+
 const allowed_users = new Set(process.env.ALLOWED_USERS.split(", "));
 const denied_users = new Set(process.env.DENIED_USERS.split(", "));
 
@@ -37,7 +39,7 @@ app.use(fileupload({
 	}
 }));
 
-app.use("/", express.static(`${backend}/build/`));
+app.use("/", express.static(`${frontend}/build/`));
 
 passport.use(new passport_reddit.Strategy({
 	clientID: process.env.REDDIT_APP_ID,
@@ -78,7 +80,7 @@ process.nextTick(() => { // handle any deserializeUser errors here
 			console.log(`destroyed session (${username})`);
 			req.logout();
 
-			res.status(401).sendFile(`${backend}/build/index.html`);
+			res.status(401).sendFile(`${frontend}/build/index.html`);
 		} else {
 			next();
 		}
@@ -163,7 +165,7 @@ app.post("/upload", (req, res) => {
 		file.parse_import(req.user.username, files).catch((err) => console.error(err));
 		res.end();
 	} else {
-		res.status(401).sendFile(`${backend}/build/index.html`);
+		res.status(401).sendFile(`${frontend}/build/index.html`);
 	}
 });
 
@@ -173,7 +175,7 @@ app.get("/download", (req, res) => {
 			filesystem.promises.unlink(`${backend}/tempfiles/${req.query.filename}.json`).catch((err) => console.error(err));
 		});
 	} else {
-		res.status(401).sendFile(`${backend}/build/index.html`);
+		res.status(401).sendFile(`${frontend}/build/index.html`);
 	}
 });
 
@@ -182,7 +184,7 @@ app.get("/logout", (req, res) => {
 		req.logout();
 		res.redirect(302, "/");
 	} else {
-		res.status(401).sendFile(`${backend}/build/index.html`);
+		res.status(401).sendFile(`${frontend}/build/index.html`);
 	}
 });
 
@@ -197,12 +199,12 @@ app.get("/purge", async (req, res) => {
 			res.send("error");
 		}
 	} else {
-		res.status(401).sendFile(`${backend}/build/index.html`);
+		res.status(401).sendFile(`${frontend}/build/index.html`);
 	}
 });
 
 app.all("*", (req, res) => {
-	res.status(404).sendFile(`${backend}/build/index.html`);
+	res.status(404).sendFile(`${frontend}/build/index.html`);
 });
 
 io.on("connect", (socket) => {

@@ -20,7 +20,6 @@ fully selfhosted multi-user web app for externally storing Reddit items (saved, 
 	2. cd into repo: `cd ./expanse/`
 	3. create environment variables file: `cp ./backend/.env_example ./backend/.env_prod`
 	4. fill out the values in the `./backend/.env_prod` file
-	5. build: `sh ./run.sh prod build`
 - usage::
 	1. cd into repo
 	2. start: `sh ./run.sh prod up` (stop: `sh ./run.sh prod down`)

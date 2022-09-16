@@ -1,0 +1,35 @@
+version: "3.8"
+volumes:
+    db:
+    backups:
+networks:
+    net:
+        attachable: false
+services:
+    db:
+        image: docker.io/postgres:latest
+        volumes:
+            - db:/var/lib/postgresql/
+        networks:
+            - net
+        env_file:
+            - ./backend/.env_prod
+        restart: on-failure
+    app:
+        depends_on:
+            - db
+        image: ghcr.io/jc9108/expanse:latest
+        working_dir: /app/
+        volumes:
+            - backups:/app/backend/backups/
+        networks:
+            - net
+        ports:
+            - "1301:1301"
+        environment:
+            - VERSION=1.0.1
+        env_file:
+            - ./backend/.env_prod
+        entrypoint: []
+        command: sh -c "wait-for-it db:5432 -t 0 && cd ./backend/ && npm run prod"
+        restart: on-failure

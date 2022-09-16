@@ -1,8 +1,8 @@
 {
 	"type": "module",
 	"scripts": {
-		"dev": "nodemon ./controller/server.mjs",
-		"prod": "node ./controller/server.mjs"
+		"dev": "RUN=dev PORT=1301 nodemon ./controller/server.mjs",
+		"prod": "RUN=prod PORT=1301 node ./controller/server.mjs"
 	},
 	"devDependencies": {
 		"nodemon": "2.0.19"
