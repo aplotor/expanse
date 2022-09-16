@@ -9,7 +9,7 @@ const pool = new node_pg.Pool({ // https://node-postgres.com/api/pool
 async function init_db() {
 	const client = await pool.connect();
 	try {
-		await client.query(`begin;`);
+		await client.query("begin;");
 
 		if (process.env.RUN == "dev") {
 			const result = await client.query(`
@@ -92,10 +92,10 @@ async function init_db() {
 			;
 		`);
 
-		await client.query(`commit;`);
+		await client.query("commit;");
 	} catch (err) {
 		console.error(err);
-		await client.query(`rollback;`);
+		await client.query("rollback;");
 	}
 	client.release();
 }
@@ -109,14 +109,14 @@ async function query(query) {
 async function transaction(queries) {
 	const client = await pool.connect();
 	try {
-		await client.query(`begin;`);
+		await client.query("begin;");
 		for (const query of queries) {
 			await client.query(query);
 		}
-		await client.query(`commit;`);
+		await client.query("commit;");
 	} catch (err) {
 		console.error(err);
-		await client.query(`rollback;`);
+		await client.query("rollback;");
 	}
 	client.release();
 }
