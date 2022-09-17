@@ -30,7 +30,7 @@ fully selfhosted multi-user web app for externally storing Reddit items (saved, 
 - automatic update and startup via systemd:
 	1. cd into repo
 	2. update expanse path in service file: `sed -i s./opt/expanse.$PWD.g expanse.service`
-	4. enable and start expanse: `systemctl enable $PWD/expanse.service --now`
+	3. enable and start expanse: `systemctl enable $PWD/expanse.service --now`
 - [hosted version](https://github.com/jc9108/eternity)
 
 <hr/>
