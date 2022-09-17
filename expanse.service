@@ -2,7 +2,8 @@
 Description=web app for storing Reddit items
 Documentation=https://github.com/jc9108/expanse
 Wants=network-online.target
-After=network-online.target
+Requires=docker.service
+After=network-online.target docker.service
 
 [Service]
 Type=oneshot
