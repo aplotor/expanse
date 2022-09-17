@@ -1,0 +1,17 @@
+[Unit]
+Description=web app for storing Reddit items
+Documentation=https://github.com/jc9108/expanse
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=true
+WorkingDirectory=/opt/expanse
+ExecStartPre=git pull
+ExecStartPre=docker compose -f ./compose.prod.yaml pull
+ExecStart=docker compose -f ./compose.prod.yaml up
+ExecStop=docker compose -f ./compose.prod.yaml down
+
+[Install]
+WantedBy=default.target
