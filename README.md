@@ -20,18 +20,17 @@ fully selfhosted multi-user web app for externally storing Reddit items (saved, 
 	2. cd into repo: `cd ./expanse/`
 	3. create environment variables file: `cp ./backend/.env_example ./backend/.env_prod`
 	4. fill out the values in the `./backend/.env_prod` file
-- manual usage::
+- usage::
 	1. cd into repo
 	2. start: `sh ./run.sh prod up` (stop: `sh ./run.sh prod down`)
 	3. go to http://localhost:1301
-- systemd usage::
-	1. cd into repo
-	2. update expanse path in service file: `sed -i s./opt/expanse.$PWD.g expanse.service`
-	4. enable and start expanse: `systemctl enable $PWD/expanse.service --now`
-	5. expanse should now start automatically, go to http://localhost:1301
 - updating::
 	1. cd into repo
 	2. update: `sh ./run.sh prod update`
+- automatic update and startup via systemd:
+	1. cd into repo
+	2. update expanse path in service file: `sed -i s./opt/expanse.$PWD.g expanse.service`
+	4. enable and start expanse: `systemctl enable $PWD/expanse.service --now`
 - [hosted version](https://github.com/jc9108/eternity)
 
 <hr/>
