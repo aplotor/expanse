@@ -6,8 +6,7 @@ Requires=docker.service
 After=network-online.target docker.service
 
 [Service]
-Type=oneshot
-RemainAfterExit=true
+Type=exec
 WorkingDirectory=/opt/expanse
 ExecStartPre=git pull
 ExecStartPre=docker compose -f ./compose.prod.yaml pull
