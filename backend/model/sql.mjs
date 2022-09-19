@@ -1,7 +1,7 @@
 import node_pg from "pg";
 
 const pool = new node_pg.Pool({ // https://node-postgres.com/api/pool
-	connectionString: `postgresql://${process.env.POSTGRES_USER}:${process.env.POSTGRES_PASSWORD}@db:5432/${process.env.POSTGRES_DB}`,
+	connectionString: process.env.PSQL_CONNECTION || `postgresql://${process.env.POSTGRES_USER}:${process.env.POSTGRES_PASSWORD}@db:5432/${process.env.POSTGRES_DB}`,
 	max: (process.env.RUN == "dev" ? 1 : 10),
 	idleTimeoutMillis: 0
 });
