@@ -2,29 +2,40 @@ import node_pg from "pg";
 import EmbeddedPostgres from "embedded-postgres";
 
 const pool = new node_pg.Pool({ // https://node-postgres.com/api/pool
-	connectionString: `postgresql://${process.env.POSTGRES_USER}:${process.env.POSTGRES_PASSWORD}@db:${process.env.POSTGRES_PORT}/${process.env.POSTGRES_DB}`,
+	connectionString: `postgresql://${process.env.POSTGRES_USER}:${process.env.POSTGRES_PASSWORD}@${process.env.POSTGRES_HOST}:${process.env.POSTGRES_PORT}/${process.env.POSTGRES_DB}`,
 	max: (process.env.RUN == "dev" ? 1 : 10),
 	idleTimeoutMillis: 0
 });
 
 async function init_db_embedded(){
     // Create the object
-    const pg = new EmbeddedPostgres({
-        data_dir: './data/db',
+    const pg = new EmbeddedPostgres.default({
+        data_dir: '../data/db',
         user: process.env.POSTGRES_USER,
         password: process.env.POSTGRES_PASSWORD,
         port: process.env.POSTGRES_PORT,
         persistent: true,
     });
 
-    // Create the cluster config files
-    await pg.inititialize();
+	try{
+		// Create the cluster config files
+		await pg.initialise();
+	}catch(e){
+		console.warn(e);
+	}
 
     // Start the server
     await pg.start();
 
-	// Create database
-	await pg.createDatabase(process.env.POSTGRES_DB);
+	try{
+		// Create database
+		await pg.createDatabase(process.env.POSTGRES_DB);
+	}catch(e){
+		console.warn(e);
+	}
+
+	// HOST is always localhost when embedded
+	process.env.POSTGRES_HOST='localhost'
 }
 
 async function init_db() {
