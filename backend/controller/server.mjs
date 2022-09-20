@@ -310,7 +310,7 @@ io.on("connect", (socket) => {
 	});
 });
 
-server.listen(Number.parseInt(process.env.PORT), "0.0.0.0", () => {
+server.listen(Number.parseInt(process.env.PORT), process.env.IP, () => {
 	console.log(`server (expanse) started on (localhost:${process.env.PORT})`);
 });
 

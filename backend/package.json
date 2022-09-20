@@ -1,8 +1,8 @@
 {
 	"type": "module",
 	"scripts": {
-		"dev": "RUN=dev PORT=1301 nodemon ./controller/server.mjs",
-		"prod": "RUN=prod PORT=1301 node ./controller/server.mjs"
+		"dev": "nodemon -r dotenv/config controller/server.mjs dotenv_config_path=.env_dev",
+		"prod": "node -r dotenv/config controller/server.mjs dotenv_config_path=.env_prod"
 	},
 	"devDependencies": {
 		"nodemon": "2.0.19"
@@ -10,6 +10,8 @@
 	"dependencies": {
 		"cookie-session": "1.4.0",
 		"cryptr": "6.0.3",
+		"dotenv": "16.0.2",
+		"embedded-postgres": "14.3.0-alpha.21",
 		"express": "4.18.1",
 		"express-fileupload": "1.4.0",
 		"passport": "0.5.3",

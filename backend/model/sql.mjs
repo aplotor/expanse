@@ -1,12 +1,36 @@
 import node_pg from "pg";
+import EmbeddedPostgres from "embedded-postgres";
 
 const pool = new node_pg.Pool({ // https://node-postgres.com/api/pool
-	connectionString: `postgresql://${process.env.POSTGRES_USER}:${process.env.POSTGRES_PASSWORD}@db:5432/${process.env.POSTGRES_DB}`,
+	connectionString: `postgresql://${process.env.POSTGRES_USER}:${process.env.POSTGRES_PASSWORD}@db:${process.env.POSTGRES_PORT}/${process.env.POSTGRES_DB}`,
 	max: (process.env.RUN == "dev" ? 1 : 10),
 	idleTimeoutMillis: 0
 });
 
+async function init_db_embedded(){
+    // Create the object
+    const pg = new EmbeddedPostgres({
+        data_dir: './data/db',
+        user: process.env.POSTGRES_USER,
+        password: process.env.POSTGRES_PASSWORD,
+        port: process.env.POSTGRES_PORT,
+        persistent: true,
+    });
+
+    // Create the cluster config files
+    await pg.inititialize();
+
+    // Start the server
+    await pg.start();
+
+	// Create database
+	await pg.createDatabase(process.env.POSTGRES_DB);
+}
+
 async function init_db() {
+	if(process.env.POSTGRES_EMBEDDED=='true'){
+		await init_db_embedded()
+	}
 	const client = await pool.connect();
 	try {
 		await client.query("begin;");
