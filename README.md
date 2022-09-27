@@ -27,7 +27,7 @@ fully selfhosted multi-user web app for externally storing Reddit items (saved, 
 - updating::
 	1. cd into repo
 	2. update: `sh ./run.sh prod update`
-- automatic update and startup via systemd::
+- or, automatic startup and update via systemd::
 	1. cd into repo
 	2. update expanse path in service file: `sed -i s./opt/expanse.$PWD.g expanse.service`
 	3. enable and start expanse: `systemctl enable $PWD/expanse.service --now`
