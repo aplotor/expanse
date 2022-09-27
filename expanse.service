@@ -7,10 +7,10 @@ After=network-online.target docker.service
 
 [Service]
 Type=exec
-WorkingDirectory=/opt/expanse/
-ExecStartPre=-/opt/expanse/run.sh prod update
-ExecStart=/opt/expanse/run.sh prod up --no-d
-ExecStop=/opt/expanse/run.sh prod down
+WorkingDirectory=/home/sugoidogo/expanse/
+ExecStartPre=-/home/sugoidogo/expanse/run.sh prod update
+ExecStart=/home/sugoidogo/expanse/run.sh prod up --no-d
+ExecStop=/home/sugoidogo/expanse/run.sh prod down
 
 [Install]
 WantedBy=default.target
