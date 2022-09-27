@@ -15,6 +15,10 @@ if [ "$1" = "dev" ]; then
 	fi
 elif [ "$1" = "prod" ]; then
 	if [ "$2" = "up" ]; then
+		if [ "$3" = "--no-d" ]; then
+			sudo docker compose -f ./compose.prod.yaml up
+			return
+		fi
 		sudo docker compose -f ./compose.prod.yaml up -d
 		return
 	elif [ "$2" = "down" ]; then
