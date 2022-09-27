@@ -1,5 +1,5 @@
 [Unit]
-Description=web app for storing Reddit items
+Description=fully selfhosted multi-user web app for externally storing Reddit items (saved, created, upvoted, downvoted, hidden) to bypass Reddit's 1000-item listing limits
 Documentation=https://github.com/jc9108/expanse
 Wants=network-online.target
 Requires=docker.service
