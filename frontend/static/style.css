@@ -185,6 +185,12 @@ img {
 	list-style-type: none;
 }
 
+.btn_padded {
+	margin-left: 5px;
+	margin-right: 5px;
+}
+
+
 #dropdown_menu {
 	left: 50%;
 	right: auto;

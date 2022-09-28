@@ -22,6 +22,7 @@
 		subreddit_select_dropdown,
 		category_btn_group,
 		type_btn_group,
+		sort_btn_group,
 		skeleton_list,
 		new_data_alert_wrapper
 	] = [];
@@ -31,6 +32,7 @@
 	let active_sub = "all";
 	let active_search_str = "";
 	let items_currently_listed = 0;
+	let active_sorting = "desc";
 
 	let item_list = null;
 	const observer = new IntersectionObserver((entries) => {
@@ -106,10 +108,10 @@
 
 			const item_id = evt.target.parentElement.parentElement.classList[0];
 			const item_category = active_category;
-			const item_type = document.querySelector(`#${item_id}`).dataset.type;
+			const item_type = document.getElementById(item_id).dataset.type;
 
 			if (delete_from == "expanse" || delete_from == "both") {
-				const list_item = document.querySelector(`#${item_id}`);
+				const list_item = document.getElementById(item_id);
 				list_item.innerHTML = "";
 				list_item.removeAttribute("data-url");
 				list_item.removeAttribute("data-type");
@@ -173,6 +175,26 @@
 					console.error(err);
 				}
 			}
+		} else if (evt.target.parentElement == sort_btn_group) {
+			const selected_sorting = await new Promise((resolve, reject) => {
+				setTimeout(() => {
+					let type = null;
+					for (const btn of [...(sort_btn_group.children)]) {
+						(btn.classList.contains("active") ? type = btn.innerText : null);
+					}
+					resolve(type);
+				}, 100);
+			});
+			if (selected_sorting != active_sorting) {
+				active_sorting = selected_sorting;
+				try {
+					await refresh_item_list();
+					update_search_placeholder().catch((err) => console.error(err));
+					fill_subreddit_select().catch((err) => console.error(err));
+				} catch (err) {
+					console.error(err);
+				}
+			}
 		}
 
 		if (evt.target.id == "refresh_btn") {
@@ -224,7 +246,7 @@
 			sub: active_sub,
 			search_str: active_search_str
 		};
-		globals_r.socket.emit("get data", filter, count, items_currently_listed);
+		globals_r.socket.emit("get data", filter, count, items_currently_listed, active_sorting);
 
 		await new Promise((resolve, reject) => {
 			globals_r.socket.once("got data", (data) => {
@@ -244,9 +266,7 @@
 							<button type="button" class="delete_btn btn btn-sm btn-outline-secondary shadow-none border-0 py-0" data-toggle="popover" data-placement="right" data-title="delete item from" data-content='<div class="${item_id}"><div><span class="row_1_popover_btn btn btn-sm btn-primary float-left px-0">expanse</span><span class="row_1_popover_btn btn btn-sm btn-primary float-center px-0">Reddit</span><span class="row_1_popover_btn btn btn-sm btn-primary float-right px-0">both</span></div><div><span class="row_2_popover_btn btn btn-sm btn-secondary float-left mt-2">cancel</span><span class="row_2_popover_btn delete_item_confirm_btn btn btn-sm btn-danger float-right mt-2">confirm</span></div><div class="clearfix"></div></div>' data-html="true">delete</button> <button type="button" class="copy_link_btn btn btn-sm btn-outline-secondary shadow-none border-0 py-0">copy link</button>
 						</div>
 					`);
-
-					(items_currently_listed == x-Math.floor(count/2)-1 ? observer.observe(document.querySelector(`#${item_id}`)) : null);
-
+					(items_currently_listed == x-Math.floor(count/2)-1 ? observer.observe(document.getElementById(item_id)) : null);
 					jQuery('[data-toggle="tooltip"]').tooltip("enable");
 					jQuery('[data-toggle="popover"]').popover("enable");
 
@@ -421,7 +441,7 @@
 	<div id="access_container" class="card card-body bg-dark mt-3 pb-3">
 		<form>
 			<div class="form-row d-flex justify-content-center">
-				<div bind:this={category_btn_group} class="btn-group btn-group-toggle flex-wrap" data-toggle="buttons">
+				<div bind:this={category_btn_group} class="btn_padded btn-group btn-group-toggle flex-wrap" data-toggle="buttons">
 					<label class="btn btn-secondary shadow-none active"><input type="radio" name="options"/>saved</label>
 					<label class="btn btn-secondary shadow-none"><input type="radio" name="options"/>created</label>
 					<label class="btn btn-secondary shadow-none"><input type="radio" name="options"/>upvoted</label>
@@ -430,10 +450,14 @@
 				</div>
 			</div>
 			<div class="form-row d-flex justify-content-center mt-2">
-				<div bind:this={type_btn_group} class="btn-group btn-group-toggle flex-wrap" data-toggle="buttons">
+				<div bind:this={type_btn_group} class="btn_padded btn-group btn-group-toggle flex-wrap" margin-left=5px margin-right=5px data-toggle="buttons">
 					<label class="btn btn-secondary shadow-none"><input type="radio" name="options"/>posts</label>
 					<label class="btn btn-secondary shadow-none"><input type="radio" name="options"/>comments</label>
 					<label class="btn btn-secondary shadow-none active"><input type="radio" name="options"/>all</label>
+				</div>
+				<div bind:this={sort_btn_group} class="btn_padded btn-group btn-group-toggle flex-wrap" margin-left=5px margin-right=5px data-toggle="buttons">
+					<label class="btn btn-secondary shadow-none active"><input type="radio" name="options"/>desc</label>
+					<label class="btn btn-secondary shadow-none"><input type="radio" name="options" />asc</label>
 				</div>
 			</div>
 			<div class="form-row mt-2">

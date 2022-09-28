@@ -253,9 +253,9 @@ io.on("connect", (socket) => {
 		}
 	});
 
-	socket.on("get data", async (filter, item_count, offset) => {
+	socket.on("get data", async (filter, item_count, offset, order_by) => {
 		try {
-			const data = await sql.get_data(socket.username, filter, item_count, offset);
+			const data = await sql.get_data(socket.username, filter, item_count, offset, order_by);
 			io.to(socket.id).emit("got data", data);
 		} catch (err) {
 			console.error(err);
