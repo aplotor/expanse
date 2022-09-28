@@ -106,10 +106,10 @@
 
 			const item_id = evt.target.parentElement.parentElement.classList[0];
 			const item_category = active_category;
-			const item_type = document.querySelector(`#${item_id}`).dataset.type;
+			const item_type = document.querySelector(`[id="${item_id}"]`).dataset.type;
 
 			if (delete_from == "expanse" || delete_from == "both") {
-				const list_item = document.querySelector(`#${item_id}`);
+				const list_item = document.querySelector(`[id="${item_id}"]`);
 				list_item.innerHTML = "";
 				list_item.removeAttribute("data-url");
 				list_item.removeAttribute("data-type");
@@ -245,7 +245,7 @@
 						</div>
 					`);
 
-					(items_currently_listed == x-Math.floor(count/2)-1 ? observer.observe(document.querySelector(`#${item_id}`)) : null);
+					(items_currently_listed == x-Math.floor(count/2)-1 ? observer.observe(document.querySelector(`[id="${item_id}"]`)) : null);
 
 					jQuery('[data-toggle="tooltip"]').tooltip("enable");
 					jQuery('[data-toggle="popover"]').popover("enable");
