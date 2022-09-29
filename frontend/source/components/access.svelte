@@ -452,12 +452,12 @@
 				</div>
 			</div>
 			<div class="form-row d-flex justify-content-center mt-2">
-				<div bind:this={type_btn_group} class="btn_padded btn-group btn-group-toggle flex-wrap" margin-left=5px margin-right=5px data-toggle="buttons">
+				<div bind:this={type_btn_group} class="btn_padded btn-group btn-group-toggle flex-wrap" data-toggle="buttons">
 					<label class="btn btn-secondary shadow-none"><input type="radio" name="options"/>posts</label>
 					<label class="btn btn-secondary shadow-none"><input type="radio" name="options"/>comments</label>
 					<label class="btn btn-secondary shadow-none active"><input type="radio" name="options"/>all</label>
 				</div>
-				<div bind:this={sort_btn_group} class="btn_padded btn-group btn-group-toggle flex-wrap" margin-left=5px margin-right=5px data-toggle="buttons">
+				<div bind:this={sort_btn_group} class="btn_padded btn-group btn-group-toggle flex-wrap" data-toggle="buttons">
 					<label class="btn btn-secondary shadow-none active"><input type="radio" name="options"/>desc</label>
 					<label class="btn btn-secondary shadow-none"><input type="radio" name="options" />asc</label>
 				</div>
