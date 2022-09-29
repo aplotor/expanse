@@ -108,10 +108,11 @@
 
 			const item_id = evt.target.parentElement.parentElement.classList[0];
 			const item_category = active_category;
-			const item_type = document.getElementById(item_id).dataset.type;
+
+			const item_type = document.querySelector(`[id="${item_id}"]`).dataset.type;
 
 			if (delete_from == "expanse" || delete_from == "both") {
-				const list_item = document.getElementById(item_id);
+				const list_item = document.querySelector(`[id="${item_id}"]`);
 				list_item.innerHTML = "";
 				list_item.removeAttribute("data-url");
 				list_item.removeAttribute("data-type");
@@ -266,7 +267,9 @@
 							<button type="button" class="delete_btn btn btn-sm btn-outline-secondary shadow-none border-0 py-0" data-toggle="popover" data-placement="right" data-title="delete item from" data-content='<div class="${item_id}"><div><span class="row_1_popover_btn btn btn-sm btn-primary float-left px-0">expanse</span><span class="row_1_popover_btn btn btn-sm btn-primary float-center px-0">Reddit</span><span class="row_1_popover_btn btn btn-sm btn-primary float-right px-0">both</span></div><div><span class="row_2_popover_btn btn btn-sm btn-secondary float-left mt-2">cancel</span><span class="row_2_popover_btn delete_item_confirm_btn btn btn-sm btn-danger float-right mt-2">confirm</span></div><div class="clearfix"></div></div>' data-html="true">delete</button> <button type="button" class="copy_link_btn btn btn-sm btn-outline-secondary shadow-none border-0 py-0">copy link</button>
 						</div>
 					`);
-					(items_currently_listed == x-Math.floor(count/2)-1 ? observer.observe(document.getElementById(item_id)) : null);
+
+					(items_currently_listed == x-Math.floor(count/2)-1 ? observer.observe(document.querySelector(`[id="${item_id}"]`)) : null);
+
 					jQuery('[data-toggle="tooltip"]').tooltip("enable");
 					jQuery('[data-toggle="popover"]').popover("enable");
 
