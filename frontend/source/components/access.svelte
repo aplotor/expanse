@@ -108,7 +108,6 @@
 
 			const item_id = evt.target.parentElement.parentElement.classList[0];
 			const item_category = active_category;
-
 			const item_type = document.querySelector(`[id="${item_id}"]`).dataset.type;
 
 			if (delete_from == "expanse" || delete_from == "both") {
