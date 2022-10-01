@@ -33,9 +33,3 @@ fully selfhosted multi-user web app for externally storing Reddit items (saved, 
 	3. allow executing `./run.sh`: `chmod +x ./run.sh`
 	4. enable and start service: `systemctl enable ./expanse.service --now`
 - [hosted version](https://github.com/jc9108/eternity)
-
-<hr/>
-
-- sponsors::
-	- [jlynnes](https://github.com/jlynnes)
-	- [rickcecil](https://github.com/rickcecil)
