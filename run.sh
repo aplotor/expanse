@@ -9,9 +9,6 @@ if [ "$1" = "dev" ]; then
 	elif [ "$2" = "up" ]; then
 		sudo docker compose -f ./compose.dev.yaml up --no-build
 		return
-	elif [ "$2" = "down" ]; then
-		sudo docker compose -f ./compose.dev.yaml down --rmi all -v
-		return
 	fi
 elif [ "$1" = "prod" ]; then
 	if [ "$2" = "up" ]; then
