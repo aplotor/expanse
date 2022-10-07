@@ -23,7 +23,7 @@ fully selfhosted multi-user web app for externally storing Reddit items (saved, 
 - usage::
 	1. cd into repo
 	2. start: `sh ./run.sh prod up` (stop: `sh ./run.sh prod down`)
-	3. go to http://localhost:1301
+	3. go to http://localhost:1301 / http://{host ip}:1301
 - updating::
 	1. cd into repo
 	2. update: `sh ./run.sh prod update`
