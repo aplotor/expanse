@@ -46,6 +46,10 @@
 		threshold: 0
 	});
 
+	const debounced_hide_popover = utils.create_debounced_function(() => {
+		jQuery("[data-toggle='popover']").popover("hide");
+	}, 100, true);
+
 	async function handle_body_click(evt) {
 		(evt.target.classList.contains("dropdown-item") || evt.target.parentElement && evt.target.parentElement.classList.contains("dropdown-item") ? subreddit_select_btn.blur() : null);
 
@@ -397,7 +401,7 @@
 		});
 
 		item_list.addEventListener("scroll", (evt) => {
-			jQuery("[data-toggle='popover']").popover("hide");
+			debounced_hide_popover();
 		});
 	});
 	svelte.onDestroy(() => {

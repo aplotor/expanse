@@ -43,9 +43,22 @@ function show_alert(alert_wrapper, message, type) {
 	`;
 }
 
+function create_debounced_function(fn, timeout, exec_leading) {
+	let timeout_id = null;
+	return function () {
+		(exec_leading && !timeout_id ? fn.apply(this, arguments) : null);
+		(timeout_id ? clearTimeout(timeout_id) : null);
+		timeout_id = setTimeout(() => {
+			fn.apply(this, arguments);
+			timeout_id = null;
+		}, timeout);
+	};
+}
+
 export {
 	epoch_to_formatted_datetime,
 	time_since,
 	shake_element,
-	show_alert
+	show_alert,
+	create_debounced_function
 };
