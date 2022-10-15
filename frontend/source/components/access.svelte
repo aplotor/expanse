@@ -59,17 +59,23 @@
 			window.open(evt.target.parentElement.dataset.url, "_blank");
 		}
 
-		if (evt.target.classList.contains("copy_link_btn")) {
-			try {
-				await window.navigator.clipboard.writeText(evt.target.parentElement.dataset.url);
-				evt.target.classList.remove("btn-outline-secondary");
-				evt.target.classList.add("btn-success");
-				setTimeout(() => {
-					evt.target.classList.remove("btn-success");
-					evt.target.classList.add("btn-outline-secondary");
-				}, 500);
-			} catch (err) {
-				console.error(err);
+		if (evt.target.classList.contains("copy_link_btn") || evt.target.classList.contains("renew_btn")) {
+			evt.target.classList.remove("btn-outline-secondary");
+			evt.target.classList.add("btn-success");
+			setTimeout(() => {
+				evt.target.classList.remove("btn-success");
+				evt.target.classList.add("btn-outline-secondary");
+			}, 500);
+
+			if (evt.target.classList.contains("copy_link_btn")) {
+				window.navigator.clipboard.writeText(evt.target.parentElement.dataset.url).catch((err) => console.error(err));
+			} else if (evt.target.classList.contains("renew_btn")) {
+				const comment_id = evt.target.parentElement.id;
+
+				globals_r.socket.emit("renew comment", comment_id);
+				globals_r.socket.once("renewed comment", (comment_content) => {
+					evt.target.parentElement.querySelector(".content_wrapper > small").innerHTML = comment_content.replaceAll("<", "&lt;").replaceAll(">", "&gt;");
+				});
 			}
 		}
 		
@@ -245,7 +251,7 @@
 						<div id="${item_id}" class="list-group-item list-group-item-action text-left text-light p-1" data-url="${item.url}" data-type="${item.type}">
 							<a href="https://www.reddit.com/${item.sub}" target="_blank"><img src="${data.item_sub_icon_urls[item.sub]}" class="rounded-circle${(data.item_sub_icon_urls[item.sub] == "#" ? "" : " border border-light")}"/></a><small><a href="https://www.reddit.com/${item.sub}" target="_blank"><b class="ml-2">${item.sub}</b></a> &bull; <a href="https://www.reddit.com/${item.author}" target="_blank">${item.author}</a> &bull; <i data-url="${item.url}" data-toggle="tooltip" data-placement="top" title="${utils.epoch_to_formatted_datetime(item.created_epoch)}">${utils.time_since(item.created_epoch)}</i></small>
 							<p class="content_wrapper lead line_height_1 noto_sans m-0" data-url="${item.url}">${(item.type == "post" ? "<b>" : "<small>")}${item.content.replaceAll("<", "&lt;").replaceAll(">", "&gt;")}${(item.type == "post" ? "</b>" : "</small>")}</p>
-							<button type="button" class="delete_btn btn btn-sm btn-outline-secondary shadow-none border-0 py-0" data-toggle="popover" data-placement="right" data-title="delete item from" data-content='<div class="${item_id}"><div><span class="row_1_popover_btn btn btn-sm btn-primary float-left px-0">expanse</span><span class="row_1_popover_btn btn btn-sm btn-primary float-center px-0">Reddit</span><span class="row_1_popover_btn btn btn-sm btn-primary float-right px-0">both</span></div><div><span class="row_2_popover_btn btn btn-sm btn-secondary float-left mt-2">cancel</span><span class="row_2_popover_btn delete_item_confirm_btn btn btn-sm btn-danger float-right mt-2">confirm</span></div><div class="clearfix"></div></div>' data-html="true">delete</button> <button type="button" class="copy_link_btn btn btn-sm btn-outline-secondary shadow-none border-0 py-0">copy link</button>
+							<button type="button" class="delete_btn btn btn-sm btn-outline-secondary shadow-none border-0 py-0" data-toggle="popover" data-placement="right" data-title="delete item from" data-content='<div class="${item_id}"><div><span class="row_1_popover_btn btn btn-sm btn-primary float-left px-0">expanse</span><span class="row_1_popover_btn btn btn-sm btn-primary float-center px-0">Reddit</span><span class="row_1_popover_btn btn btn-sm btn-primary float-right px-0">both</span></div><div><span class="row_2_popover_btn btn btn-sm btn-secondary float-left mt-2">cancel</span><span class="row_2_popover_btn delete_item_confirm_btn btn btn-sm btn-danger float-right mt-2">confirm</span></div><div class="clearfix"></div></div>' data-html="true">delete</button> <button type="button" class="copy_link_btn btn btn-sm btn-outline-secondary shadow-none border-0 py-0">copy link</button>${(item.type == "post" ? "" : ' <button type="button" class="renew_btn btn btn-sm btn-outline-secondary shadow-none border-0 py-0">renew</button>')}
 						</div>
 					`);
 

@@ -464,6 +464,24 @@ async function get_subs(username, filter) {
 	return subs;
 }
 
+async function update_item(item_id, item_content) {
+	await query({
+		text: `
+			update 
+				item 
+			set 
+				content = $1 
+			where 
+				id = $2
+			;
+		`,
+		values: [
+			item_content,
+			item_id
+		]
+	});
+}
+
 async function delete_item_from_expanse_acc(username, item_id, item_category) {
 	await transaction([{
 		text: `
@@ -623,6 +641,7 @@ export {
 	get_data,
 	get_placeholder,
 	get_subs,
+	update_item,
 	delete_item_from_expanse_acc,
 	parse_import,
 	get_fns_to_import,

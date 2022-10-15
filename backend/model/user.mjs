@@ -447,6 +447,16 @@ class User {
 		delete this.sub_icon_urls_to_get;
 		delete this.imported_fns_to_delete;
 	}
+	async renew_comment(comment_id) {
+		const requester = reddit.create_requester(cryptr.decrypt(this.reddit_api_refresh_token_encrypted));
+		
+		const unfetched_comment = requester.getComment(comment_id);
+		const fetched_comment = await unfetched_comment.fetch();
+
+		const comment_content = fetched_comment.body;
+		sql.update_item(comment_id, comment_content).catch((err) => console.error(err));
+		return comment_content;
+	}
 	async delete_item_from_reddit_acc(item_id, item_category, item_type) {
 		const requester = reddit.create_requester(cryptr.decrypt(this.reddit_api_refresh_token_encrypted));
 	

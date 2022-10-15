@@ -280,6 +280,16 @@ io.on("connect", (socket) => {
 		}
 	});
 
+	socket.on("renew comment", async (comment_id) => {
+		try {
+			const u = await user.get(socket.username);
+			const comment_content = await u.renew_comment(comment_id);
+			io.to(socket.id).emit("renewed comment", comment_content);
+		} catch (err) {
+			console.error(err);
+		}
+	});
+
 	socket.on("delete item from expanse acc", (item_id, item_category) => {
 		sql.delete_item_from_expanse_acc(socket.username, item_id, item_category).catch((err) => console.error(err));
 	});
