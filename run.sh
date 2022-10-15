@@ -3,7 +3,7 @@
 if [ "$1" = "dev" ]; then
 	if [ "$2" = "build" ]; then
 		(cd ./backend/ && npm install)
-		(cd ./frontend/ && npm install)
+		(cd ./frontend/ && npm install && npm run build)
 		sudo docker compose -f ./compose.dev.yaml build
 		return
 	elif [ "$2" = "up" ]; then
