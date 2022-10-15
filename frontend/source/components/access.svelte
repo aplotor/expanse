@@ -71,12 +71,11 @@
 			if (evt.target.classList.contains("copy_link_btn")) {
 				window.navigator.clipboard.writeText(evt.target.parentElement.dataset.url).catch((err) => console.error(err));
 			} else if (evt.target.classList.contains("text_btn")) {
-				const post_id = evt.target.parentElement.id;
-
 				const post_text_wrapper = evt.target.parentElement.querySelector(".post_text_wrapper");
-				post_text_wrapper.classList.toggle("d-none");
 				if (post_text_wrapper.innerHTML == "") {
 					try {
+						const post_id = evt.target.parentElement.id;
+						
 						const response = await axios.get(`https://api.pushshift.io/reddit/search/submission/?ids=${post_id}&fields=selftext`);
 						const response_data = response.data;
 
@@ -86,6 +85,7 @@
 						console.error(err);
 					}
 				}
+				post_text_wrapper.classList.toggle("d-none");
 			} else if (evt.target.classList.contains("renew_btn")) {
 				const comment_id = evt.target.parentElement.id;
 
