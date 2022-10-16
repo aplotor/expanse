@@ -83,6 +83,7 @@
 						post_text_wrapper.innerHTML = (post_text ? post_text.replaceAll("<", "&lt;").replaceAll(">", "&gt;") : "this is not a text post");
 					} catch (err) {
 						console.error(err);
+						post_text_wrapper.innerHTML = "error: pushshift currently down";
 					}
 				}
 				post_text_wrapper.classList.toggle("d-none");
