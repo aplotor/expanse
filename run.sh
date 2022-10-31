@@ -1,7 +1,14 @@
 #!/bin/sh
 
 if [ "$1" = "dev" ]; then
-	if [ "$2" = "build" ]; then
+	if [ "$2" = "audit" ]; then
+		(cd ./backend/ && npm audit)
+		cd ./frontend/ && npm audit
+	elif [ "$2" = "outdated" ]; then
+		(cd ./backend/ && npm outdated)
+		cd ./frontend/ && npm outdated
+		return
+	elif [ "$2" = "build" ]; then
 		(cd ./backend/ && npm install)
 		(cd ./frontend/ && npm install && npm run build)
 		sudo docker compose -f ./compose.dev.yaml build
