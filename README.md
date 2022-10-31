@@ -1,6 +1,6 @@
 # expanse
 
-fully selfhosted multi-user web app for externally storing Reddit items (saved, created, upvoted, downvoted, hidden) to bypass Reddit's 1000-item listing limits
+selfhosted multi-user web app for externally storing Reddit items (saved, created, upvoted, downvoted, hidden) to bypass Reddit's 1000-item listing limits
 
 - features::
 	- new items auto-sync
@@ -27,9 +27,5 @@ fully selfhosted multi-user web app for externally storing Reddit items (saved, 
 - updating::
 	1. cd into repo
 	2. update: `sh ./run.sh prod update`
-- or, automatic startup and update via systemd::
-	1. cd into repo
-	2. update repo path in service file: `sed -i "s./opt/expanse.$PWD.g" ./expanse.service`
-	3. allow executing `./run.sh`: `chmod +x ./run.sh`
-	4. enable and start service: `systemctl enable ./expanse.service --now`
+- <details><summary>(optional) systemd service</summary><ol><li>cd into repo</li><li>update repo path in service file: <code>sed -i "s./opt/expanse.$PWD.g" ./expanse.service</code></li><li>allow executing <code>./run.sh</code>: <code>chmod +x ./run.sh</code></li><li>enable and start service: <code>systemctl enable ./expanse.service --now</code></li></ol></details>
 - [hosted version](https://github.com/jc9108/eternity)
