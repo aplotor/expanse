@@ -5,19 +5,19 @@
 		"prod": "RUN=prod PORT=1301 node ./controller/server.mjs"
 	},
 	"devDependencies": {
-		"nodemon": "2.0.19"
+		"nodemon": "2.0.20"
 	},
 	"dependencies": {
 		"cookie-session": "1.4.0",
 		"cryptr": "6.0.3",
-		"express": "4.18.1",
+		"express": "4.18.2",
 		"express-fileupload": "1.4.0",
 		"passport": "0.5.3",
 		"passport-reddit": "0.2.4",
-		"pg": "8.7.3",
+		"pg": "8.8.0",
 		"snoowrap": "1.23.0",
-		"socket.io": "4.5.1",
-		"winston": "3.8.1",
+		"socket.io": "4.5.3",
+		"winston": "3.8.2",
 		"xlsx": "0.17.5"
 	}
 }
