@@ -3,8 +3,8 @@ const backend = process.cwd();
 const sql = await import(`${backend}/model/sql.mjs`);
 const reddit = await import(`${backend}/model/reddit.mjs`);
 const cryptr = await import(`${backend}/model/cryptr.mjs`);
-const epoch = await import(`${backend}/model/epoch.mjs`);
 const logger = await import(`${backend}/model/logger.mjs`);
+const utils = await import(`${backend}/model/utils.mjs`);
 
 let update_all_completed = null;
 
@@ -47,7 +47,7 @@ class User {
 				}
 			};
 			this.last_updated_epoch = null;
-			this.last_active_epoch = epoch.now();
+			this.last_active_epoch = utils.now_epoch();
 		}
 	}
 	async save() {
@@ -105,9 +105,9 @@ class User {
 				this.new_data.items[item.id] = {
 					type: (type == "posts" ? "post" : "comment"),
 					content: (type == "posts" ? item.title : item.body),
-					author: "u/"+item.author.name,
+					author: `u/${item.author.name}`,
 					sub: item.subreddit_name_prefixed,
-					url: "https://www.reddit.com" + (item.permalink.endsWith("/") ? item.permalink.slice(0, -1) : item.permalink),
+					url: `https://www.reddit.com${utils.strip_trailing_slash(item.permalink)}`,
 					created_epoch: item.created_utc
 				};
 
@@ -200,7 +200,7 @@ class User {
 				this.category_sync_info[category][`latest_fn_${type}`] = latest_fn;
 			} else {
 				this.parse_listing(listing, category, type);
-				this.category_sync_info[category].latest_new_data_epoch = epoch.now();
+				this.category_sync_info[category].latest_new_data_epoch = utils.now_epoch();
 			}
 		} else {
 			const extended_listing = await listing.fetchAll({
@@ -209,7 +209,7 @@ class User {
 			// console.log(`(${category}) (${type}) extended listing is finished: ${extended_listing.isFinished}`);
 
 			this.parse_listing(extended_listing, category, type);
-			this.category_sync_info[category].latest_new_data_epoch = epoch.now();
+			this.category_sync_info[category].latest_new_data_epoch = utils.now_epoch();
 		}
 	}
 	async import_category(category, type) {
@@ -231,7 +231,7 @@ class User {
 				this.parse_listing(listing, category, type, false, true);
 			}
 
-			// this.category_sync_info[category].latest_new_data_epoch = epoch.now(); // comment this out on expanse bc of false positive (there can be >0 rows returned even if this user doesnt have any items to import. this happens if this user already owns an item that another user has entered for import)
+			// this.category_sync_info[category].latest_new_data_epoch = utils.now_epoch(); // comment this out on expanse bc of false positive (there can be >0 rows returned even if this user doesnt have any items to import. this happens if this user already owns an item that another user has entered for import)
 	
 			for (const fn of fns) {
 				this.imported_fns_to_delete.add(fn);
@@ -293,7 +293,7 @@ class User {
 				break;
 			case "u/":
 				for (const sub of responses) {
-					const sub_name = "u/"+sub.name;
+					const sub_name = `u/${sub.name}`;
 	
 					let sub_icon_url = "#";
 					if (sub.icon_img) {
@@ -438,7 +438,7 @@ class User {
 
 		await sql.update_user(this.username, {
 			category_sync_info: JSON.stringify(this.category_sync_info),
-			last_updated_epoch: this.last_updated_epoch = epoch.now()
+			last_updated_epoch: this.last_updated_epoch = utils.now_epoch()
 		});
 		(io ? io.to(socket_id).emit("update progress", ++progress, complete) : null);
 		console.log(`updated user (${this.username})`);
@@ -580,6 +580,7 @@ async function get(username, existence_check=false) {
 }
 
 async function update_all(io) {
+	console.log("update all started");
 	update_all_completed = false;
 
 	const all_usernames = Object.keys(usernames_to_socket_ids);
@@ -588,7 +589,7 @@ async function update_all(io) {
 		try {
 			user = await get(username);
 
-			if (user.last_updated_epoch && epoch.now() - user.last_updated_epoch >= 30) {
+			if (user.last_updated_epoch && utils.now_epoch() - user.last_updated_epoch >= 30) {
 				const pre_update_category_sync_info = JSON.parse(JSON.stringify(user.category_sync_info));
 
 				await user.update();

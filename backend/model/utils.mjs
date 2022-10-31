@@ -1,4 +1,4 @@
-function now() {
+function now_epoch() {
 	const now_epoch = Math.floor(Date.now() / 1000);
 	return now_epoch;
 }
@@ -11,7 +11,13 @@ function epoch_to_formatted_datetime(epoch) {
 	return formatted_datetime;
 }
 
+function strip_trailing_slash(string) {
+	const stripped_string = (string.endsWith("/") ? string.slice(0, -1) : string);
+	return stripped_string;
+}
+
 export {
-	now,
-	epoch_to_formatted_datetime
+	now_epoch,
+	epoch_to_formatted_datetime,
+	strip_trailing_slash
 };

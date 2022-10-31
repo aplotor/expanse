@@ -1,7 +1,7 @@
 const backend = process.cwd();
 
 const sql = await import(`${backend}/model/sql.mjs`);
-const epoch = await import(`${backend}/model/epoch.mjs`);
+const utils = await import(`${backend}/model/utils.mjs`);
 
 import filesystem from "fs";
 import xlsx from "xlsx";
@@ -119,7 +119,7 @@ async function delete_oldest_if_reached_limit(limit, dir, what) {
 }
 
 function backup_db() {
-	const filename = epoch.epoch_to_formatted_datetime(epoch.now()).replaceAll(":", "꞉").split(" ").join("_");
+	const filename = utils.epoch_to_formatted_datetime(utils.now_epoch()).replaceAll(":", "꞉").split(" ").join("_");
 
 	const spawn = child_process.spawn("pg_dump", [
 		"-O", "-d", sql.pool.options.connectionString, "-f", `${backend}/backups/${filename}.sql`

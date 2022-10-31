@@ -5,6 +5,7 @@
 
 	import * as svelte from "svelte";
 	import axios from "axios";
+	import underscore from "underscore";
 
 	const globals_r = globals.readonly;
 </script>
@@ -47,16 +48,16 @@
 		threshold: 0
 	});
 
-	const debounced_hide_popover = utils.create_debounced_function(() => {
+	const debounced_hide_popover = underscore.debounce(() => {
 		jQuery("[data-toggle='popover']").popover("hide");
 	}, 100, true);
 
 	async function handle_body_click(evt) {
-		(evt.target.classList.contains("dropdown-item") || evt.target.parentElement && evt.target.parentElement.classList.contains("dropdown-item") ? subreddit_select_btn.blur() : null);
+		(evt.target.classList.contains("dropdown-item") || evt.target.parentElement?.classList.contains("dropdown-item") ? subreddit_select_btn.blur() : null);
 
-		if (evt.target.dataset && evt.target.dataset.url) {
+		if (evt.target.dataset?.url) {
 			window.open(evt.target.dataset.url, "_blank");
-		} else if (evt.target.parentElement && evt.target.parentElement.dataset && evt.target.parentElement.dataset.url && evt.target.tagName != "BUTTON") {
+		} else if (evt.target.parentElement?.dataset?.url && evt.target.tagName != "BUTTON") {
 			window.open(evt.target.parentElement.dataset.url, "_blank");
 		}
 
@@ -76,14 +77,14 @@
 					try {
 						const post_id = evt.target.parentElement.id;
 						
-						const response = await axios.get(`https://api.pushshift.io/reddit/search/submission/?ids=${post_id}&fields=selftext`);
+						const response = await axios.get(`https://api.pushshift.io/reddit/search/submission?ids=${post_id}&fields=selftext`);
 						const response_data = response.data;
 
 						const post_text = response_data.data[0].selftext;
-						post_text_wrapper.innerHTML = (post_text ? post_text.replaceAll("<", "&lt;").replaceAll(">", "&gt;") : "this is not a text post");
+						post_text_wrapper.innerHTML = (post_text ? underscore.escape(post_text) : "[this is not a text post]");
 					} catch (err) {
 						console.error(err);
-						post_text_wrapper.innerHTML = "error: pushshift currently down";
+						post_text_wrapper.innerHTML = "[error: pushshift currently down. please try again later]";
 					}
 				}
 				post_text_wrapper.classList.toggle("d-none");
@@ -93,7 +94,7 @@
 				globals_r.socket.emit("renew comment", comment_id);
 				globals_r.socket.once("renewed comment", (comment_content) => {
 					const content_wrapper = evt.target.parentElement.querySelector(".content_wrapper");
-					content_wrapper.innerHTML = comment_content.replaceAll("<", "&lt;").replaceAll(">", "&gt;");
+					content_wrapper.innerHTML = underscore.escape(comment_content);
 				});
 			}
 		}
@@ -156,7 +157,7 @@
 			if (delete_from == "Reddit" || delete_from == "both") {
 				globals_r.socket.emit("delete item from reddit acc", item_id, item_category, item_type);
 			}
-		} else if (!evt.target.classList.contains("row_2_popover_btn") && document.querySelector(".popover") && document.querySelector(".popover").contains(evt.target)) {
+		} else if (!evt.target.classList.contains("row_2_popover_btn") && document.querySelector(".popover")?.contains(evt.target)) {
 			null;
 		} else {
 			jQuery("[data-toggle='popover']").popover("hide");
@@ -269,18 +270,16 @@
 					item_list.insertAdjacentHTML("beforeend", `
 						<div id="${item_id}" class="list-group-item list-group-item-action text-left text-light p-1" data-url="${item.url}" data-type="${item.type}">
 							<a href="https://www.reddit.com/${item.sub}" target="_blank"><img src="${data.item_sub_icon_urls[item.sub]}" class="rounded-circle${(data.item_sub_icon_urls[item.sub] == "#" ? "" : " border border-light")}"/></a><small><a href="https://www.reddit.com/${item.sub}" target="_blank"><b class="ml-2">${item.sub}</b></a> &bull; <a href="https://www.reddit.com/${item.author}" target="_blank">${item.author}</a> &bull; <i data-url="${item.url}" data-toggle="tooltip" data-placement="top" title="${utils.epoch_to_formatted_datetime(item.created_epoch)}">${utils.time_since(item.created_epoch)}</i></small>
-							<p class="lead line_height_1 m-0" data-url="${item.url}"><${(item.type == "post" ? "b" : "small")} class="content_wrapper noto_sans">${item.content.replaceAll("<", "&lt;").replaceAll(">", "&gt;")}</${(item.type == "post" ? "b" : "small")}></p>
+							<p class="lead line_height_1 m-0" data-url="${item.url}"><${(item.type == "post" ? "b" : "small")} class="content_wrapper noto_sans">${underscore.escape(item.content)}</${(item.type == "post" ? "b" : "small")}></p>
 							<button type="button" class="delete_btn btn btn-sm btn-outline-secondary shadow-none border-0 py-0" data-toggle="popover" data-placement="right" data-title="delete item from" data-content='<div class="${item_id}"><div><span class="row_1_popover_btn btn btn-sm btn-primary float-left px-0">expanse</span><span class="row_1_popover_btn btn btn-sm btn-primary float-center px-0">Reddit</span><span class="row_1_popover_btn btn btn-sm btn-primary float-right px-0">both</span></div><div><span class="row_2_popover_btn btn btn-sm btn-secondary float-left mt-2">cancel</span><span class="row_2_popover_btn delete_item_confirm_btn btn btn-sm btn-danger float-right mt-2">confirm</span></div><div class="clearfix"></div></div>' data-html="true">delete</button> <button type="button" class="copy_link_btn btn btn-sm btn-outline-secondary shadow-none border-0 py-0">copy link</button> <button type="button" class="${(item.type == "post" ? "text" : "renew")}_btn btn btn-sm btn-outline-secondary shadow-none border-0 py-0">${(item.type == "post" ? "text" : "renew")}</button>
 							${(item.type == "post" ? '<p class="post_text_wrapper noto_sans line_height_1 d-none m-0"></p>' : "")}
 						</div>
 					`);
 
-					(items_currently_listed == x-Math.floor(count/2)-1 ? observer.observe(document.querySelector(`[id="${item_id}"]`)) : null);
+					(++items_currently_listed == x-Math.floor(count/2)-1 ? observer.observe(document.querySelector(`[id="${item_id}"]`)) : null);
 
 					jQuery('[data-toggle="tooltip"]').tooltip("enable");
 					jQuery('[data-toggle="popover"]').popover("enable");
-
-					items_currently_listed++;
 				}
 
 				resolve();
