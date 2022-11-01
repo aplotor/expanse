@@ -107,7 +107,8 @@ async function delete_oldest_if_reached_limit(limit, dir, what) {
 		let oldest_file = null;
 		let oldest_file_ctime = null;
 		for (const file of files) {
-			const ctime = await filesystem.promises.stat(`${dir}/${file}`.replace("//", "/")).ctime;
+			const stats = await filesystem.promises.stat(`${dir}/${file}`.replace("//", "/"));
+			const ctime = stats.ctime;
 			if (!oldest_file || ctime < oldest_file_ctime) {
 				oldest_file = file;
 				oldest_file_ctime = ctime;

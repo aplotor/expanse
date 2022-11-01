@@ -27,7 +27,7 @@ services:
         ports:
             - "1301:1301"
         environment:
-            - VERSION=1.2.5
+            - VERSION=1.2.6
         env_file:
             - ./backend/.env_prod
         entrypoint: []
