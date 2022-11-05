@@ -317,7 +317,7 @@ async function insert_data(username, data) {
 	await transaction(prepared_statements);
 }
 
-async function get_data(username, filter, item_count, offset) {
+async function get_data(username, filter, item_count, offset, order_by) {
 	const data = {
 		items: {},
 		item_sub_icon_urls: {}
@@ -340,7 +340,7 @@ async function get_data(username, filter, item_count, offset) {
 				and category = $1`,
 				[],
 			`order by 
-				created_epoch desc 
+				created_epoch ${order_by} 
 			limit 
 				${(Number.isInteger(item_count) || item_count == "all" ? item_count : null)} 
 			offset 

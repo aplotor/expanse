@@ -24,6 +24,7 @@
 		subreddit_select_dropdown,
 		category_btn_group,
 		type_btn_group,
+		sort_btn_group,
 		skeleton_list,
 		new_data_alert_wrapper
 	] = [];
@@ -33,6 +34,7 @@
 	let active_sub = "all";
 	let active_search_str = "";
 	let items_currently_listed = 0;
+	let active_sorting = "desc";
 
 	let item_list = null;
 	const observer = new IntersectionObserver((entries) => {
@@ -203,6 +205,26 @@
 					console.error(err);
 				}
 			}
+		} else if (evt.target.parentElement == sort_btn_group) {
+			const selected_sorting = await new Promise((resolve, reject) => {
+				setTimeout(() => {
+					let type = null;
+					for (const btn of [...(sort_btn_group.children)]) {
+						(btn.classList.contains("active") ? type = btn.innerText : null);
+					}
+					resolve(type);
+				}, 100);
+			});
+			if (selected_sorting != active_sorting) {
+				active_sorting = selected_sorting;
+				try {
+					await refresh_item_list();
+					update_search_placeholder().catch((err) => console.error(err));
+					fill_subreddit_select().catch((err) => console.error(err));
+				} catch (err) {
+					console.error(err);
+				}
+			}
 		}
 
 		if (evt.target.id == "refresh_btn") {
@@ -254,7 +276,7 @@
 			sub: active_sub,
 			search_str: active_search_str
 		};
-		globals_r.socket.emit("get data", filter, count, items_currently_listed);
+		globals_r.socket.emit("get data", filter, count, items_currently_listed, active_sorting);
 
 		await new Promise((resolve, reject) => {
 			globals_r.socket.once("got data", (data) => {
@@ -450,7 +472,7 @@
 	<div id="access_container" class="card card-body bg-dark mt-3 pb-3">
 		<form>
 			<div class="form-row d-flex justify-content-center">
-				<div bind:this={category_btn_group} class="btn-group btn-group-toggle flex-wrap" data-toggle="buttons">
+				<div bind:this={category_btn_group} class="btn_padded btn-group btn-group-toggle flex-wrap" data-toggle="buttons">
 					<label class="btn btn-secondary shadow-none active"><input type="radio" name="options"/>saved</label>
 					<label class="btn btn-secondary shadow-none"><input type="radio" name="options"/>created</label>
 					<label class="btn btn-secondary shadow-none"><input type="radio" name="options"/>upvoted</label>
@@ -459,10 +481,14 @@
 				</div>
 			</div>
 			<div class="form-row d-flex justify-content-center mt-2">
-				<div bind:this={type_btn_group} class="btn-group btn-group-toggle flex-wrap" data-toggle="buttons">
+				<div bind:this={type_btn_group} class="btn_padded btn-group btn-group-toggle flex-wrap" data-toggle="buttons">
 					<label class="btn btn-secondary shadow-none"><input type="radio" name="options"/>posts</label>
 					<label class="btn btn-secondary shadow-none"><input type="radio" name="options"/>comments</label>
 					<label class="btn btn-secondary shadow-none active"><input type="radio" name="options"/>all</label>
+				</div>
+				<div bind:this={sort_btn_group} class="btn_padded btn-group btn-group-toggle flex-wrap" data-toggle="buttons">
+					<label class="btn btn-secondary shadow-none active"><input type="radio" name="options"/>desc</label>
+					<label class="btn btn-secondary shadow-none"><input type="radio" name="options" />asc</label>
 				</div>
 			</div>
 			<div class="form-row mt-2">
