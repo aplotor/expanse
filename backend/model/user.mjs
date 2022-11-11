@@ -76,6 +76,44 @@ class User {
 
 		console.log(`saved user (${this.username})`);
 	}
+	async get_listing(options, category, type) {
+		let listing = null;
+		switch (category) {
+			case "saved": // posts, comments
+				listing = await this.me.getSavedContent(options);
+				break;
+			case "created": // posts, comments
+				switch (type) {
+					case "posts":
+						listing = await this.me.getSubmissions(options);
+						break;
+					case "comments":
+						listing = await this.me.getComments(options);
+						break;
+					default:
+						break;
+				}
+				break;
+			case "upvoted": // posts
+				listing = await this.me.getUpvotedContent(options);
+				break;
+			case "downvoted": // posts
+				listing = await this.me.getDownvotedContent(options);
+				break;
+			case "hidden": // posts
+				listing = await this.me.getHiddenContent(options);
+				break;
+			case "awarded": // posts, comments
+				listing = await this.me._getListing({
+					uri: `u/${this.username}/gilded/given`,
+					qs: options
+				});
+				break;
+			default:
+				break;
+		}
+		return listing;
+	}
 	parse_listing(listing, category, type, from_mixed=false, from_import=false) {
 		if (type == "mixed") {
 			(!from_import ? this.category_sync_info[category].latest_fn_mixed = listing[0].name : null);
@@ -117,87 +155,31 @@ class User {
 			}
 		}
 	}
+	async replace_latest_fn(category, type, save_now=false) {
+		const options = {
+			limit: 1
+		};
+		const listing = await this.get_listing(options, category, type);
+		
+		const latest_fn = (listing.length != 0 ? listing[0].name : null);
+		this.category_sync_info[category][`latest_fn_${type}`] = latest_fn;
+
+		if (save_now) {
+			await sql.update_user(this.username, {
+				category_sync_info: JSON.stringify(this.category_sync_info)
+			});
+		}
+	}
 	async sync_category(category, type) {
-		let listing = null;
 		let options = {
 			limit: 5,
 			before: this.category_sync_info[category][`latest_fn_${type}`] // "before" is actually chronologically after. https://www.reddit.com/dev/api/#listings
 		};
-
-		switch (category) {
-			case "saved": // posts, comments
-				listing = await this.me.getSavedContent(options);
-				break;
-			case "created": // posts, comments
-				switch (type) {
-					case "posts":
-						listing = await this.me.getSubmissions(options);
-						break;
-					case "comments":
-						listing = await this.me.getComments(options);
-						break;
-					default:
-						break;
-				}
-				break;
-			case "upvoted": // posts
-				listing = await this.me.getUpvotedContent(options);
-				break;
-			case "downvoted": // posts
-				listing = await this.me.getDownvotedContent(options);
-				break;
-			case "hidden": // posts
-				listing = await this.me.getHiddenContent(options);
-				break;
-			case "awarded": // posts, comments
-				listing = await this.me._getListing({
-					uri: `u/${this.username}/gilded/given`,
-					qs: options
-				});
-				break;
-			default:
-				break;
-		}
+		const listing = await this.get_listing(options, category, type);
 
 		if (listing.isFinished) {
-			// console.log(`(${category}) (${type}) listing is finished: ${listing.isFinished}`);
-			
 			if (listing.length == 0) { // either listing actually has no items, or user deleted the latest_fn item from the listing on reddit (like, deleted it from reddit ON reddit, not deleted it from reddit on expanse)
-				options = {
-					limit: 1
-				};
-
-				switch (category) {
-					case "saved":
-						listing = await this.me.getSavedContent(options);
-						break;
-					case "created":
-						switch (type) {
-							case "posts":
-								listing = await this.me.getSubmissions(options);
-								break;
-							case "comments":
-								listing = await this.me.getComments(options);
-								break;
-							default:
-								break;
-						}
-						break;
-					case "upvoted":
-						listing = await this.me.getUpvotedContent(options);
-						break;
-					case "downvoted":
-						listing = await this.me.getDownvotedContent(options);
-						break;
-					case "hidden":
-						listing = await this.me.getHiddenContent(options);
-						break;
-					default:
-						break;
-				}
-				
-				const latest_fn = (listing.length != 0 ? listing[0].name : null);
-				this.category_sync_info[category][`latest_fn_${type}`] = latest_fn;
+				await this.replace_latest_fn(category, type);
 			} else {
 				this.parse_listing(listing, category, type);
 				this.category_sync_info[category].latest_new_data_epoch = utils.now_epoch();
@@ -206,8 +188,6 @@ class User {
 			const extended_listing = await listing.fetchAll({
 				append: true
 			});
-			// console.log(`(${category}) (${type}) extended listing is finished: ${extended_listing.isFinished}`);
-
 			this.parse_listing(extended_listing, category, type);
 			this.category_sync_info[category].latest_new_data_epoch = utils.now_epoch();
 		}
@@ -298,15 +278,15 @@ class User {
 					let sub_icon_url = "#";
 					if (sub.icon_img) {
 						sub_icon_url = sub.icon_img.split("?")[0];
-					} else if (sub.subreddit.display_name.icon_img) {
+					} else if (sub.subreddit?.display_name.icon_img) {
 						sub_icon_url = sub.subreddit.display_name.icon_img.split("?")[0];
 					} else if (sub.community_icon) {
 						sub_icon_url = sub.community_icon.split("?")[0];
-					} else if (sub.subreddit.display_name.community_icon) {
+					} else if (sub.subreddit?.display_name.community_icon) {
 						sub_icon_url = sub.subreddit.display_name.community_icon.split("?")[0];
 					} else if (sub.snoovatar_img) {
 						sub_icon_url = sub.snoovatar_img.split("?")[0];
-					} else if (sub.subreddit.display_name.snoovatar_img) {
+					} else if (sub.subreddit?.display_name.snoovatar_img) {
 						sub_icon_url = sub.subreddit.display_name.snoovatar_img.split("?")[0];
 					}
 	
@@ -362,6 +342,9 @@ class User {
 				(io ? io.to(socket_id).emit("update progress", ++progress, complete) : null);
 				resolve();
 			} catch (err) {
+				err.extras = {
+					category: "saved"
+				};
 				reject(err);
 			}
 		});
@@ -376,6 +359,9 @@ class User {
 				(io ? io.to(socket_id).emit("update progress", ++progress, complete) : null);
 				resolve();
 			} catch (err) {
+				err.extras = {
+					category: "created"
+				};
 				reject(err);
 			}
 		});
@@ -387,6 +373,9 @@ class User {
 				(io ? io.to(socket_id).emit("update progress", ++progress, complete) : null);
 				resolve();
 			} catch (err) {
+				err.extras = {
+					category: "upvoted"
+				};
 				reject(err);
 			}
 		});
@@ -398,6 +387,9 @@ class User {
 				(io ? io.to(socket_id).emit("update progress", ++progress, complete) : null);
 				resolve();
 			} catch (err) {
+				err.extras = {
+					category: "downvoted"
+				};
 				reject(err);
 			}
 		});
@@ -409,6 +401,9 @@ class User {
 				(io ? io.to(socket_id).emit("update progress", ++progress, complete) : null);
 				resolve();
 			} catch (err) {
+				err.extras = {
+					category: "hidden"
+				};
 				reject(err);
 			}
 		});
@@ -419,6 +414,9 @@ class User {
 				(io ? io.to(socket_id).emit("update progress", ++progress, complete) : null);
 				resolve();
 			} catch (err) {
+				err.extras = {
+					category: "awarded"
+				};
 				reject(err);
 			}
 		});
@@ -501,52 +499,8 @@ class User {
 		}
 	
 		if (replace_latest_fn) {
-			const me = await requester.getMe();
-	
-			let listing = null;
-			const options = {
-				limit: 1
-			};
-	
-			switch (item_category) {
-				case "saved":
-					listing = await me.getSavedContent(options);
-					break;
-				case "created":
-					switch (item_type) {
-						case "post":
-							listing = await me.getSubmissions(options);
-							break;
-						case "comment":
-							listing = await me.getComments(options);
-							break;
-						default:
-							break;
-					}
-					break;
-				case "upvoted":
-					listing = await me.getUpvotedContent(options);
-					break;
-				case "downvoted":
-					listing = await me.getDownvotedContent(options);
-					break;
-				case "hidden":
-					listing = await me.getHiddenContent(options);
-					break;
-				default:
-					break;
-			}
-	
-			const latest_fn = (listing.length != 0 ? listing[0].name : null);
-			if (item_category == "saved") {
-				this.category_sync_info.saved.latest_fn_mixed = latest_fn;
-			} else {
-				this.category_sync_info[item_category][`latest_fn_${item_type}s`] = latest_fn;
-			}
-	
-			await sql.update_user(this.username, {
-				category_sync_info: JSON.stringify(this.category_sync_info)
-			});
+			this.me = await requester.getMe();
+			await this.replace_latest_fn(item_category, (item_category == "saved" ? "mixed" : `${item_type}s`), true);
 		}
 	}
 	async purge() {
@@ -611,6 +565,33 @@ async function update_all(io) {
 			if (err != `Error: user (${username}) dne`) {
 				console.error(err);
 				logger.error(`user (${username}) update error (${err})`);
+
+				if (err.statusCode == 403 && err.options.qs.before) {
+					try {
+						switch (err.extras.category) {
+							case "saved":
+							case "awarded":
+								await user.replace_latest_fn(err.extras.category, "mixed", true);
+								break;
+							case "created":
+								await Promise.all([
+									user.replace_latest_fn(err.extras.category, "posts", true),
+									user.replace_latest_fn(err.extras.category, "comments", true)
+								]);
+								break;
+							case "upvoted":
+							case "downvoted":
+							case "hidden":
+								await user.replace_latest_fn(err.extras.category, "posts", true);
+								break;
+							default:
+								break;
+						}
+					} catch (err) {
+						console.error(err);
+						logger.error(`user (${username}) replace_latest_fn error (${err})`);
+					}
+				}
 			}
 		}
 	}
