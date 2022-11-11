@@ -17,7 +17,6 @@ function create_logger(level) { // https://github.com/winstonjs/winston#logging-
 			winston.format.printf((log) => {
 				return `${JSON.stringify({
 					timestamp: log.timestamp,
-					level: level,
 					message: log.message
 				}, null, 4)}`;
 			})
