@@ -5,6 +5,7 @@
 		"prod": "RUN=prod PORT=1301 node ./controller/server.mjs"
 	},
 	"devDependencies": {
+		"@types/node": "18.11.9",
 		"nodemon": "2.0.20"
 	},
 	"dependencies": {
