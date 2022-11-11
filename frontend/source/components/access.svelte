@@ -24,6 +24,7 @@
 		subreddit_select_dropdown,
 		category_btn_group,
 		type_btn_group,
+		item_list,
 		skeleton_list,
 		new_data_alert_wrapper
 	] = [];
@@ -34,16 +35,15 @@
 	let active_search_str = "";
 	let items_currently_listed = 0;
 
-	let item_list = null;
-	const observer = new IntersectionObserver((entries) => {
+	const intersection_observer = new IntersectionObserver((entries) => {
 		for (const entry of entries) {
 			if (entry.intersectionRatio > 0) { // observed element is in view
-				observer.unobserve(entry.target);
+				intersection_observer.unobserve(entry.target);
 				list_next_items(25).catch((err) => console.error(err));
 			}
 		}
 	}, {
-		root: item_list,
+		root: document,
 		rootMargin: "0px",
 		threshold: 0
 	});
@@ -276,7 +276,7 @@
 						</div>
 					`);
 
-					(++items_currently_listed == x-Math.floor(count/2)-1 ? observer.observe(document.querySelector(`[id="${item_id}"]`)) : null);
+					(++items_currently_listed == x-Math.floor(count/2)-1 ? intersection_observer.observe(document.querySelector(`[id="${item_id}"]`)) : null);
 
 					jQuery('[data-toggle="tooltip"]').tooltip("enable");
 					jQuery('[data-toggle="popover"]').popover("enable");
@@ -288,7 +288,7 @@
 	}
 
 	async function refresh_item_list() {
-		observer.disconnect(); // stops observing all currently observed elements. (does NOT stop the intersection observer. i.e., it can still observe new elements)
+		intersection_observer.disconnect(); // stops observing all currently observed elements. (does NOT stop the intersection observer. i.e., it can still observe new elements)
 		item_list.innerHTML = "";
 		item_list.scrollTop = 0;
 		items_currently_listed = 0;
@@ -441,7 +441,7 @@
 <Navbar username={username} show_data_anchors={true}/>
 <div class="text-center mt-3">
 	<h1 class="display-4">{globals_r.app_name}</h1>
-	<span>last updated: <b bind:this={last_updated_wrapper_1}>?</b> ago</span>
+	<span>last updated: <b bind:this={last_updated_wrapper_1} id="last_updated_wrapper_1">?</b> ago</span>
 	<br/>
 	<small bind:this={last_updated_wrapper_2} class="d-none">?</small>
 	<div class="d-flex justify-content-center">

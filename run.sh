@@ -4,6 +4,7 @@ if [ "$1" = "dev" ]; then
 	if [ "$2" = "audit" ]; then
 		(cd ./backend/ && npm audit)
 		cd ./frontend/ && npm audit
+		return
 	elif [ "$2" = "outdated" ]; then
 		(cd ./backend/ && npm outdated)
 		cd ./frontend/ && npm outdated

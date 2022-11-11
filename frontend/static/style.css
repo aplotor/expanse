@@ -55,13 +55,12 @@ a {
 	text-decoration: none;
 }
 
-a:hover {
-	color: rgb(113, 142, 183);
-	text-decoration: underline;
-}
-
 a:visited {
 	color: rgb(169, 110, 110);
+}
+
+a:hover {
+	text-decoration: underline;
 }
 
 img {
@@ -255,6 +254,10 @@ img {
 #redirect_notice {
 	background: pink;
 	color: black;
+}
+
+#last_updated_wrapper_1 {
+	cursor: pointer;
 }
 
 #item_list, #skeleton_list {

@@ -7,21 +7,20 @@ thank you for showing interest in the development of this project. by contributi
 	- when submitting a bug report::
 		- make sure you are on the latest version of the app in case the bug has already been patched
 		- explicitly state what version of the app you are using (find it on line 30 of your local `expanse/compose.prod.yaml`)
-		- try to include as much detail as possible, including steps to reproduce the bug
+		- try to include as much detail as possible, relevant logs, and steps to reproduce the bug
 	- please answer follow up questions, if any, in a timely manner
 	- refrain from posting "+1" comments. use the thumbs reaction instead
 - [PRs](https://github.com/jc9108/expanse/pulls)::
 	- before starting a new PR, try searching existing issues and PRs first
 	- what PRs are accepted?
 		- ✅ usually accept::
-			- bug/security/typo fix
+			- bug/security/typo fixes
 		- ⚠️ discussion first::
 			- large PRs
 			- new features
 		- ❌ won't accept::
 			- buggy/breaking changes
 			- unfitting UI/UX
-			- unnecessary changes
 	- when submitting a PR::
 		- try to include as much detail as possible of what changes you are proposing
 		- try to adhere to the existing code syntax/style
