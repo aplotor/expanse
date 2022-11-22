@@ -3,8 +3,8 @@ const backend = process.cwd();
 const sql = await import(`${backend}/model/sql.mjs`);
 const utils = await import(`${backend}/model/utils.mjs`);
 
+import * as xlsx from "xlsx";
 import filesystem from "fs";
-import xlsx from "xlsx";
 import child_process from "child_process";
 
 async function init() {
@@ -91,7 +91,7 @@ async function create_export(username) {
 		export_data[category] = await sql.get_data(username, filter, "all", 0);
 	}
 
-	const filename = Math.random().toString().substring(2, 17);
+	const filename = Math.random().toString().slice(2, 17);
 	await filesystem.promises.writeFile(`${backend}/tempfiles/${filename}.json`, JSON.stringify(export_data, null, 4), "utf-8");
 
 	setTimeout(() => {

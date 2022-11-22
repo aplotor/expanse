@@ -4,7 +4,7 @@ networks:
         attachable: false
 services:
     db:
-        image: docker.io/postgres:latest
+        image: docker.io/postgres:14
         networks:
             - net
         env_file:

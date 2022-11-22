@@ -13,7 +13,7 @@ run npm run build
 
 from docker.io/ubuntu:latest
 run apt update
-run apt install -y curl wait-for-it postgresql-client
+run apt install -y curl wait-for-it postgresql-client-14
 run curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - && apt install -y nodejs
 run npm install -g concurrently
 workdir /app/backend/
