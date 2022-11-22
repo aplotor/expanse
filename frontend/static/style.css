@@ -51,16 +51,17 @@ footer {
 }
 
 a {
-	color: rgb(113, 142, 183);
+	color: #718eb7;
 	text-decoration: none;
 }
 
-a:visited {
-	color: rgb(169, 110, 110);
+a:hover {
+	color: #718eb7;
+	text-decoration: underline;
 }
 
-a:hover {
-	text-decoration: underline;
+a:visited {
+	color: #a96e6e;
 }
 
 img {
@@ -86,7 +87,7 @@ img {
 }
 
 .dropdown-toggle {
-	color: rgb(113, 142, 183);
+	color: #718eb7;
 }
 
 .dropdown-toggle:focus {
@@ -227,7 +228,7 @@ img {
 }
 
 #settings_btn {
-	color: rgb(113, 142, 183);
+	color: #718eb7;
 }
 
 #settings_btn:hover {
