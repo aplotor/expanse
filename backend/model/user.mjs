@@ -604,7 +604,7 @@ function cycle_update_all(io) {
 
 	setInterval(() => {
 		(update_all_completed ? update_all(io).catch((err) => console.error(err)) : null);
-	}, 60000); // 1min
+	}, parseFloat(process.env.UPDATE_INTERVAL) * 60000); // internval * 1min
 }
 
 export {
