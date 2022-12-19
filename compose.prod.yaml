@@ -9,7 +9,7 @@ services:
     db:
         image: docker.io/postgres:14
         volumes:
-            - db:/var/lib/postgresql/
+            - db:/var/lib/postgresql/data
         networks:
             - net
         env_file:
