@@ -9,7 +9,7 @@ services:
     db:
         image: docker.io/postgres:14
         volumes:
-            - db:/var/lib/postgresql/data
+            - db:/var/lib/postgresql/data/
         networks:
             - net
         env_file:
@@ -27,7 +27,7 @@ services:
         ports:
             - "1301:1301"
         environment:
-            - VERSION=1.2.9
+            - VERSION=1.2.10
         env_file:
             - ./backend/.env_prod
         entrypoint: []
