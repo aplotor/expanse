@@ -4,6 +4,7 @@ const file = await import(`${backend}/model/file.mjs`);
 const sql = await import(`${backend}/model/sql.mjs`);
 const user = await import(`${backend}/model/user.mjs`);
 const utils = await import(`${backend}/model/utils.mjs`);
+const plugins = await import(`${backend}/model/plugins.mjs`);
 
 import * as socket_io_server from "socket.io";
 import express from "express";
@@ -14,6 +15,8 @@ import passport_reddit from "passport-reddit";
 import crypto from "crypto";
 import filesystem from "fs";
 import fileupload from "express-fileupload";
+
+plugins.validatePlugins();
 
 const app = express();
 const server = http.createServer(app);
