@@ -317,6 +317,30 @@ async function insert_data(username, data) {
 	await transaction(prepared_statements);
 }
 
+async function get_items(ids) {
+	if (typeof ids === 'string' || ids instanceof String) {
+		ids = ids.split(',');
+	}
+	if (!Array.isArray(ids)) {
+		throw new Error('Expected array of strings');
+	}
+
+	let count = 0;
+	let query = "select * from item where id in (";
+	query += ids.reduce((prev) => {
+		return prev + `$${count++},`;
+	}, '');
+	query = query.replace(/,$/, '');
+	query += ')';
+
+	let prepared_statement = {
+		text: query,
+		values: ids
+	};
+
+	return await query(prepared_statement);
+}
+
 async function get_data(username, filter, item_count, offset) {
 	const data = {
 		items: {},
@@ -638,6 +662,7 @@ export {
 	purge_user,
 	get_all_non_purged_users,
 	insert_data,
+	get_items,
 	get_data,
 	get_placeholder,
 	get_subs,
