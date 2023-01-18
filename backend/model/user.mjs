@@ -6,6 +6,7 @@ const cryptr = await import(`${backend}/model/cryptr.mjs`);
 const logger = await import(`${backend}/model/logger.mjs`);
 const utils = await import(`${backend}/model/utils.mjs`);
 const plugins = await import(`${backend}/model/plugins.mjs`);
+const Item = (await import(`${backend}/model/Item.mjs`)).default;
 
 let update_all_completed = null;
 
@@ -153,7 +154,8 @@ class User {
 
 				this.new_data.category_item_ids[category].add(item.id);
 
-				this.new_data.objects.set(item.id, item);
+				if (!this.new_data.objects.has(item.id))
+					this.new_data.objects.set(item.id, new Item(item));
 
 				this.sub_icon_urls_to_get.add(item.subreddit_name_prefixed);
 			}
@@ -508,7 +510,7 @@ class User {
 	}
 	async getNewItems() {
 		let ids = [];
-		this.new_data.objects.forEach((value) => ids.push(value.id));
+		this.new_data.objects.forEach((value) => ids.push(value.snooItem.id));
 		let dbItems = await sql.get_items(ids);
 
 		let newItems = [];
