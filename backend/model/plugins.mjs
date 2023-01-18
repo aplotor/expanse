@@ -14,6 +14,7 @@ function getPlugins() {
 function validatePlugins() {
 	for (const plugin of getPlugins()) {
 		if (!plugin.can('getId') ||
+			!plugin.can('initialize') ||
 			!plugin.can('receiveItem') ||
 			!plugin.can('receiveUserItem') ||
 			!plugin.can('getAvailableConfig')) {
@@ -22,7 +23,14 @@ function validatePlugins() {
 	}
 }
 
+function initializePlugins() {
+	for (const plugin of getPlugins()) {
+		plugin.initialize();
+	}
+}
+
 export {
 	getPlugins,
-	validatePlugins
+	validatePlugins,
+	initializePlugins
 }

@@ -17,6 +17,7 @@ import filesystem from "fs";
 import fileupload from "express-fileupload";
 
 plugins.validatePlugins();
+plugins.initializePlugins();
 
 const app = express();
 const server = http.createServer(app);
