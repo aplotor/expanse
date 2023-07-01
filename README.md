@@ -11,9 +11,9 @@ selfhosted multi-user web app for externally storing Reddit items (saved, create
 	- import csv data from [Reddit data request](https://www.reddit.com/settings/data-request)
 	- export data as json
 - [demo](https://www.youtube.com/watch?v=4pxXM98ewIc)
-- prereqs::
+- requirements::
 	- git
-	- docker
+	- docker ([managed](https://docs.docker.com/engine/install/linux-postinstall/#manage-docker-as-a-non-root-user)/[rootless](https://docs.docker.com/engine/security/rootless))
 	- docker compose
 - setup::
 	1. clone repo: `git clone https://github.com/jc9108/expanse.git`
