@@ -244,7 +244,7 @@ class User {
 			default:
 				break;
 		}
-		(i == ratelimit_remaining ? console.log(`user (${this.username}) ratelimit reached`) : null);
+		(i == ratelimit_remaining ? console.log("ratelimit reached") : null);
 
 		const responses = await Promise.all(promises);
 
@@ -604,7 +604,7 @@ function cycle_update_all(io) {
 
 	setInterval(() => {
 		(update_all_completed ? update_all(io).catch((err) => console.error(err)) : null);
-	}, 60000); // 1min
+	}, Math.max(1, Number.parseFloat(process.env.UPDATE_CYCLE_INTERVAL) || 1) * 60000);
 }
 
 export {
