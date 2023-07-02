@@ -1,3 +1,11 @@
+
+Object.defineProperty(Object.prototype, 'can', {
+    enumerable: false,
+    value: function(method) {
+        return (typeof this[method] === 'function');
+    }
+});
+
 function now_epoch() {
 	const now_epoch = Math.floor(Date.now() / 1000);
 	return now_epoch;

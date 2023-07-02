@@ -5,11 +5,14 @@ const reddit = await import(`${backend}/model/reddit.mjs`);
 const cryptr = await import(`${backend}/model/cryptr.mjs`);
 const logger = await import(`${backend}/model/logger.mjs`);
 const utils = await import(`${backend}/model/utils.mjs`);
+const plugins = await import(`${backend}/model/plugins.mjs`);
+const Item = (await import(`${backend}/model/Item.mjs`)).default;
 
 let update_all_completed = null;
 
 const usernames_to_socket_ids = {};
 const socket_ids_to_usernames = {};
+const categories = ["saved", "created", "upvoted", "downvoted", "hidden", "awarded"];
 
 class User {
 	constructor(username, refresh_token, dummy=false) {
@@ -150,6 +153,9 @@ class User {
 				};
 
 				this.new_data.category_item_ids[category].add(item.id);
+
+				if (!this.new_data.objects.has(item.id))
+					this.new_data.objects.set(item.id, new Item(item));
 
 				this.sub_icon_urls_to_get.add(item.subreddit_name_prefixed);
 			}
@@ -316,6 +322,7 @@ class User {
 		this.me = await this.requester.getMe();
 		
 		this.new_data = {
+			objects: new Map(),
 			items: {},
 			category_item_ids: {},
 			item_sub_icon_urls: {}
@@ -323,11 +330,9 @@ class User {
 		this.sub_icon_urls_to_get = new Set();
 		this.imported_fns_to_delete = new Set();
 
-		const categories = ["saved", "created", "upvoted", "downvoted", "hidden", "awarded"];
 		for (const category of categories) {
 			this.new_data.category_item_ids[category] = new Set();
 		}
-		categories.pop();
 
 		const s_promise = new Promise(async (resolve, reject) => {
 			try {
@@ -418,9 +423,12 @@ class User {
 		await Promise.all([s_promise, c_promise, u_promise, d_promise, h_promise, a_promise]);
 		await this.get_new_item_icon_urls();
 
+		let newItems = await this.getNewItems();
+
 		try {
 			await sql.insert_data(this.username, this.new_data);
 			await sql.delete_imported_fns([...(this.imported_fns_to_delete)]);
+			this.callPlugins(newItems);
 			(io ? io.to(socket_id).emit("update progress", ++progress, complete) : null);
 		} catch (err) {
 			console.error(err);
@@ -498,6 +506,37 @@ class User {
 			await sql.update_user(this.username, {
 				category_sync_info: JSON.stringify(this.category_sync_info)
 			});
+		}
+	}
+	async getNewItems() {
+		let ids = [];
+		this.new_data.objects.forEach((value) => ids.push(value.snooItem.id));
+		let dbItems = await sql.get_items(ids);
+
+		let newItems = [];
+		this.new_data.objects.forEach((value) => {
+			if (dbItems.find(item => item.id == value.id) === undefined) newItems.push(value);
+		});
+		return newItems;
+	}
+	async callPlugins(newItems) {
+		for (const plugin of plugins.getPlugins()) {
+			newItems.forEach((post) => {
+				Promise.resolve(
+					plugin.receiveItem(post)
+					).then(() => {}).catch((error) => {
+					console.error(`Plugin "${plugin.getId()}" failed receiving item`, error);
+				});
+			});
+			for (const category of categories) {
+				for (const item of this.new_data.category_item_ids[category]) {
+					Promise.resolve(
+						plugin.receiveUserItem(this.username, category, this.new_data.objects.get(item), {})
+						).then(() => {}).catch((error) => {
+						console.error(`Plugin "${plugin.getId()}" failed receiving user item`, error);
+					});
+				}
+			}
 		}
 	}
 	async purge() {
