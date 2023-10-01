@@ -1,10 +1,8 @@
-const backend = process.cwd();
-
-const sql = await import(`${backend}/model/sql.mjs`);
-const reddit = await import(`${backend}/model/reddit.mjs`);
-const cryptr = await import(`${backend}/model/cryptr.mjs`);
-const logger = await import(`${backend}/model/logger.mjs`);
-const utils = await import(`${backend}/model/utils.mjs`);
+const sql = await import(`${process.env.backend}/model/sql.mjs`);
+const reddit = await import(`${process.env.backend}/model/reddit.mjs`);
+const cryptr = await import(`${process.env.backend}/model/cryptr.mjs`);
+const logger = await import(`${process.env.backend}/model/logger.mjs`);
+const utils = await import(`${process.env.backend}/model/utils.mjs`);
 
 let update_all_completed = null;
 

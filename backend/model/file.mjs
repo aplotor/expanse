@@ -1,18 +1,16 @@
-const backend = process.cwd();
-
-const sql = await import(`${backend}/model/sql.mjs`);
-const utils = await import(`${backend}/model/utils.mjs`);
-
 import * as xlsx from "xlsx";
 import filesystem from "fs";
 import child_process from "child_process";
 
+const sql = await import(`${process.env.backend}/model/sql.mjs`);
+const utils = await import(`${process.env.backend}/model/utils.mjs`);
+
 async function init() {
-	for (const dir of [`${backend}/logs/`, `${backend}/tempfiles/`, `${backend}/backups/`]) {
+	for (const dir of [`${process.env.backend}/logs/`, `${process.env.backend}/tempfiles/`, `${process.env.backend}/backups/`]) {
 		if (filesystem.existsSync(dir)) {
 			if (process.env.RUN == "dev") {
 				const files = await filesystem.promises.readdir(dir);
-				await Promise.all(files.map((file, idx, arr) => (dir == `${backend}/logs/` ? filesystem.promises.truncate(`${dir}/${file}`.replace("//", "/"), 0) : filesystem.promises.unlink(`${dir}/${file}`.replace("//", "/")))));
+				await Promise.all(files.map((file, idx, arr) => (dir == `${process.env.backend}/logs/` ? filesystem.promises.truncate(`${dir}/${file}`.replace("//", "/"), 0) : filesystem.promises.unlink(`${dir}/${file}`.replace("//", "/")))));
 			}
 		} else {
 			filesystem.mkdirSync(dir);
@@ -92,10 +90,10 @@ async function create_export(username) {
 	}
 
 	const filename = Math.random().toString().slice(2, 17);
-	await filesystem.promises.writeFile(`${backend}/tempfiles/${filename}.json`, JSON.stringify(export_data, null, 4), "utf-8");
+	await filesystem.promises.writeFile(`${process.env.backend}/tempfiles/${filename}.json`, JSON.stringify(export_data, null, 4), "utf-8");
 
 	setTimeout(() => {
-		filesystem.promises.unlink(`${backend}/tempfiles/${filename}.json`).catch((err) => null);
+		filesystem.promises.unlink(`${process.env.backend}/tempfiles/${filename}.json`).catch((err) => null);
 	}, 14400000); // 4h
 	
 	return filename;
@@ -123,7 +121,7 @@ function backup_db() {
 	const filename = utils.epoch_to_formatted_datetime(utils.now_epoch()).replaceAll(":", "꞉").split(" ").join("_");
 
 	const spawn = child_process.spawn("pg_dump", [
-		"-O", "-d", sql.pool.options.connectionString, "-f", `${backend}/backups/${filename}.sql`
+		"-O", "-d", sql.pool.options.connectionString, "-f", `${process.env.backend}/backups/${filename}.sql`
 	]);
 
 	spawn.stderr.on("data", (data) => {
@@ -140,7 +138,7 @@ function backup_db() {
 		if (exit_code == 0) {
 			console.log(`backed up db to file (${filename}.sql)`);
 
-			delete_oldest_if_reached_limit(5, `${backend}/backups/`, "db backup").catch((err) => console.error(err));
+			delete_oldest_if_reached_limit(5, `${process.env.backend}/backups/`, "db backup").catch((err) => console.error(err));
 		} else {
 			console.error(`db backup process exited with code ${exit_code}`);
 		}

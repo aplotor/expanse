@@ -1,9 +1,5 @@
-const backend = process.cwd();
-
-const file = await import(`${backend}/model/file.mjs`);
-const sql = await import(`${backend}/model/sql.mjs`);
-const user = await import(`${backend}/model/user.mjs`);
-const utils = await import(`${backend}/model/utils.mjs`);
+process.env.backend = process.cwd();
+process.env.frontend = process.env.backend.replace("backend", "frontend");
 
 import * as socket_io_server from "socket.io";
 import express from "express";
@@ -15,14 +11,17 @@ import crypto from "crypto";
 import filesystem from "fs";
 import fileupload from "express-fileupload";
 
+const file = await import(`${process.env.backend}/model/file.mjs`);
+const sql = await import(`${process.env.backend}/model/sql.mjs`);
+const user = await import(`${process.env.backend}/model/user.mjs`);
+const utils = await import(`${process.env.backend}/model/utils.mjs`);
+
 const app = express();
 const server = http.createServer(app);
 const io = new socket_io_server.Server(server, {
 	cors: (process.env.RUN == "dev" ? {origin: "*"} : null),
 	maxHttpBufferSize: 1000000 // 1mb in bytes
 });
-
-const frontend = backend.replace("backend", "frontend");
 
 const allowed_users = new Set(process.env.ALLOWED_USERS.split(", "));
 const denied_users = new Set(process.env.DENIED_USERS.split(", "));
@@ -39,7 +38,7 @@ app.use(fileupload({
 	}
 }));
 
-app.use("/", express.static(`${frontend}/build/`));
+app.use("/", express.static(`${process.env.frontend}/build/`));
 
 passport.use(new passport_reddit.Strategy({
 	clientID: process.env.REDDIT_APP_ID,
@@ -80,7 +79,7 @@ process.nextTick(() => { // handle any deserializeUser errors here
 			console.log(`destroyed session (${username})`);
 			req.logout();
 
-			res.status(401).sendFile(`${frontend}/build/index.html`);
+			res.status(401).sendFile(`${process.env.frontend}/build/index.html`);
 		} else {
 			next();
 		}
@@ -165,17 +164,17 @@ app.post("/upload", (req, res) => {
 		file.parse_import(req.user.username, files).catch((err) => console.error(err));
 		res.end();
 	} else {
-		res.status(401).sendFile(`${frontend}/build/index.html`);
+		res.status(401).sendFile(`${process.env.frontend}/build/index.html`);
 	}
 });
 
 app.get("/download", (req, res) => {
 	if (req.isAuthenticated()) {
-		res.download(`${backend}/tempfiles/${req.query.filename}.json`, `${req.query.filename}.json`, () => {
-			filesystem.promises.unlink(`${backend}/tempfiles/${req.query.filename}.json`).catch((err) => console.error(err));
+		res.download(`${process.env.backend}/tempfiles/${req.query.filename}.json`, `${req.query.filename}.json`, () => {
+			filesystem.promises.unlink(`${process.env.backend}/tempfiles/${req.query.filename}.json`).catch((err) => console.error(err));
 		});
 	} else {
-		res.status(401).sendFile(`${frontend}/build/index.html`);
+		res.status(401).sendFile(`${process.env.frontend}/build/index.html`);
 	}
 });
 
@@ -184,7 +183,7 @@ app.get("/logout", (req, res) => {
 		req.logout();
 		res.redirect(302, "/");
 	} else {
-		res.status(401).sendFile(`${frontend}/build/index.html`);
+		res.status(401).sendFile(`${process.env.frontend}/build/index.html`);
 	}
 });
 
@@ -199,12 +198,12 @@ app.delete("/purge", async (req, res) => {
 			res.send("error");
 		}
 	} else {
-		res.status(401).sendFile(`${frontend}/build/index.html`);
+		res.status(401).sendFile(`${process.env.frontend}/build/index.html`);
 	}
 });
 
 app.all("*", (req, res) => {
-	res.status(404).sendFile(`${frontend}/build/index.html`);
+	res.status(404).sendFile(`${process.env.frontend}/build/index.html`);
 });
 
 io.on("connect", (socket) => {
