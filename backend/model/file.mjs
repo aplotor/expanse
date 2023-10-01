@@ -80,7 +80,7 @@ async function parse_import(username, files) {
 
 async function create_export(username) {
 	const export_data = {};
-	const categories = ["saved", "created", "upvoted", "downvoted", "hidden", "awarded"];
+	const categories = ["saved", "created", "upvoted", "downvoted", "hidden"];
 	for (const category of categories) {
 		const filter = {
 			category: category,
