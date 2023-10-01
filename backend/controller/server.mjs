@@ -188,7 +188,7 @@ app.get("/logout", (req, res) => {
 	}
 });
 
-app.get("/purge", async (req, res) => {
+app.delete("/purge", async (req, res) => {
 	if (req.isAuthenticated() && req.query.socket_id == user.usernames_to_socket_ids[req.user.username]) {
 		try {
 			await req.user.purge();

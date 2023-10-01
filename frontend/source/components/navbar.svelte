@@ -63,7 +63,7 @@
 
 		try {
 			const response = await fetch(`${globals_r.backend}/purge?&socket_id=${globals_r.socket.id}`, {
-				method: "get"
+				method: "delete"
 			});
 			const response_data = await response.text();
 
