@@ -1,6 +1,6 @@
 # sponsors
 
-support this project by becoming a [sponsor](https://github.com/sponsors/jc9108)
+support this project by becoming a [sponsor](https://github.com/sponsors/aplotor)
 
 - big thanks to::
 	- [jlynnes](https://github.com/jlynnes)

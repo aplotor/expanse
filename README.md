@@ -16,7 +16,7 @@ selfhosted multi-user web app for externally storing Reddit items (saved, create
 	- docker ([managed](https://docs.docker.com/engine/install/linux-postinstall/#manage-docker-as-a-non-root-user)/[rootless](https://docs.docker.com/engine/security/rootless))
 	- docker compose
 - setup::
-	1. clone repo: `git clone https://github.com/jc9108/expanse.git`
+	1. clone repo: `git clone https://github.com/aplotor/expanse.git`
 	2. cd into repo: `cd ./expanse/`
 	3. create environment variables file: `cp ./backend/.env_example ./backend/.env_prod`
 	4. fill out the values in the `./backend/.env_prod` file

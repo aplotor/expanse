@@ -2,7 +2,7 @@
 
 thank you for showing interest in the development of this project. by contributing, you agree to these guidelines <!-- inspirations from: https://github.com/ppy/osu/blob/master/CONTRIBUTING.md, https://github.com/louislam/uptime-kuma/blob/master/CONTRIBUTING.md -->
 
-- [issues](https://github.com/jc9108/expanse/issues)::
+- [issues](https://github.com/aplotor/expanse/issues)::
 	- before opening a new issue, try searching existing issues first
 	- when submitting a bug report::
 		- make sure you are on the latest version of the app in case the bug has already been patched
@@ -10,7 +10,7 @@ thank you for showing interest in the development of this project. by contributi
 		- try to include as much detail as possible, relevant logs, and steps to reproduce the bug
 	- please answer follow up questions, if any, in a timely manner
 	- refrain from posting "+1" comments. use the thumbs reaction instead
-- [PRs](https://github.com/jc9108/expanse/pulls)::
+- [PRs](https://github.com/aplotor/expanse/pulls)::
 	- before starting a new PR, try searching existing issues and PRs first
 	- what PRs are accepted?
 		- ✅ usually accept::

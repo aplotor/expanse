@@ -18,7 +18,7 @@ services:
     app:
         depends_on:
             - db
-        image: ghcr.io/jc9108/expanse:latest
+        image: ghcr.io/aplotor/expanse:latest
         working_dir: /app/
         volumes:
             - backups:/app/backend/backups/
@@ -27,7 +27,7 @@ services:
         ports:
             - "1301:1301"
         environment:
-            - VERSION=1.2.12
+            - VERSION=1.2.13
         env_file:
             - ./backend/.env_prod
         entrypoint: []
