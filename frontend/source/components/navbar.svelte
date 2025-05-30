@@ -314,7 +314,7 @@
 					<button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
 				</div>
 				<div class="modal-body">
-					<span>import started. it may take up to a day to complete. do not try to re-import if you don't see all the items in eternity immediately. you can close/leave this page now</span>
+					<span>import started. it may take up to a day to complete. do not try to re-import if you don't see all the items in expanse immediately. you can close/leave this page now</span>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-light" data-dismiss="modal">ok</button>
